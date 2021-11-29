@@ -1,23 +1,25 @@
 const express = require('express')
-// const route = require('./routes')
-const db = require('./db')
-const cors = require('cors')
-const app = express()
-const port =process.env.PORT || 4000
+const route = require("./router");
+const db = require("./db");
+const cors = require("cors");
+const app = express();
+const port = process.env.PORT || 4400;
 
-app.use(express.json())
-app.use(express.urlencoded({
-    extended: true
-}))
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.get("/", (req, res) => {
-    res.status(200).json({
-        status: "Success",
-        code: 200,
-        message: "Welcome"
-    })
-})
-// app.use(route)
+  res.status(200).json({
+    status: "Success",
+    code: 200,
+    message: "Welcome",
+  });
+});
+app.use(route);
 app.use(cors());
 
 //ERROR HANDLING
