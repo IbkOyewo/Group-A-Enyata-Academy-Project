@@ -1,5 +1,6 @@
-const db = require("../db");
-const queries = require("../db/queries");
+const db = require('../db')
+const queries = require('../db/queries')
+
 const { hashPassword, comparePassword, generateToken } = require("../utils");
 
 // getting user
@@ -29,18 +30,20 @@ const validatePassword = async (email, password) => {
   return false;
 };
 
-// const updatePassword = async (req) => {
-//   const {
-//     body: { password },
-//     user: { id },
-//   } = req;
-//   const encryptedPassword = await hashPassword(password);
-//   return db.any(queries.updatePassword, [encryptedPassword, id]);
-// };
+const logAdmin = async (data) => {
+    const payload = [data.email, data.password]
+    return db.any(queries.adminLogin, payload)
+}
+
+const userForm= async (data) => {
+    const payload = [data.fname, data.lname, data.email, data.cpga, data.address, data.course, data.university, data.dob]
+    return db.any(queries.userApplication, payload)
+}
 
 module.exports = {
   createUser,
   validatePassword,
   getUser,
-  // updatePassword,
+  logAdmin,
+  userForm
 };
