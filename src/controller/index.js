@@ -5,6 +5,7 @@ const {
   createUser,
   validatePassword,
   getUser,
+  updateToken,
   updatePassword,
 } = require("../services");
 const sendVerificationEmail = require("../utils/mailler");
@@ -62,6 +63,7 @@ const forgetpassword = async (req, res) => {
       });
     }
     const oneTimeToken = generate_oneTimeToken();
+    const verifyuserToken = await updateToken(req.body.email, oneTimeToken);
     sendVerificationEmail(req.body.email, oneTimeToken);
     return res
       .json({
@@ -77,10 +79,9 @@ const forgetpassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { verification } = req.queries;
+    const { verification } = req.query;
     const user = await getUser(email);
     const encryptedPassword = await hashPassword(password);
-    console.log("======", encryptedPassword);
     if (user[0].onetime_token === verification) {
       const Verified = updatePassword(email, encryptedPassword);
       return res.json({

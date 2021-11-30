@@ -15,6 +15,10 @@ const queries = {
     FROM users
     WHERE email=$1 
     `,
+  updateToken: `
+  update users SET onetime_token=$1
+  WHERE email=$2 RETURNING *
+`,
   updatePassword: `
           Update users SET password=$1, onetime_token=$2
           WHERE email=$3 RETURNING *

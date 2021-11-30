@@ -36,9 +36,13 @@ const validatePassword = async (email, password) => {
   return false;
 };
 
+// to updata token
+const updateToken = (email, token) => db.any(queries.updateToken, [token, email])
+
+
 // update reset password
 const updatePassword = (email, newPassword) => {
-  db.any(queries.updatePassword, [email, "", newPassword]);
+  db.any(queries.updatePassword, [newPassword, "", email]);
 };
 
 // Mary
@@ -65,6 +69,7 @@ module.exports = {
   createUser,
   validatePassword,
   getUser,
+  updateToken,
   updatePassword,
   logAdmin,
   userForm,

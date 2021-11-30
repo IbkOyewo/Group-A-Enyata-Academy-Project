@@ -16,7 +16,6 @@ const sendVerificationEmail = (email, token) => {
     to: email,
     subject: "Verify your new account",
     html: `<p>To verify your email address, please click the link below </p> <br>
-        
         <h4>
         <a href="http://localhost:4400/user/reset-password?verification=${token}"target="_blank"> Verify Your Account </a>
         </h4>
