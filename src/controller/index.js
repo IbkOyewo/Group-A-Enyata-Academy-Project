@@ -1,7 +1,72 @@
 const {logAdmin, userForm} = require("../services")
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv')
+const { createUser, validatePassword, getUser } = require("../services");
+const sendVerificationEmail = require("../utils/mailler");
 dotenv.config();
+
+const createNewUser = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const newUser = await createUser(body);
+    const { password, ...user } = newUser;
+
+    res
+      .json({
+        status: "success",
+        message: `created successfully`,
+        data: user,
+      })
+      .status(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const loginUser = async (req, res, next) => {
+  try {
+    const { password, email } = req.body;
+    const token = await validatePassword(email, password);
+
+    if (!token) {
+      res.status(401).json({
+        status: "fail",
+        message: "Invalid credentials",
+      });
+    } else {
+      res.status(201).json({
+        status: "success",
+        message: "User is authenticated ",
+        data: req.body,
+        token,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const forgetpassword = async (req, res) => {
+  try {
+    const userExisted = await getUser(req.body.email);
+    if (!userExisted) {
+      return res.json({
+        status: "failed",
+        message: "User dose exist",
+      });
+    }
+    const oneTimeToken = generate();
+    sendVerificationEmail(req.body.email, oneTimeToken);
+    return res
+      .json({
+        status: "success",
+        message: "successfully sent reset password",
+      })
+      .status(201);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 const adminLog = async (req, res, next) => {
     try {
@@ -32,12 +97,7 @@ const register = async (req, res, next) => {
         const {body} = req
         const {fname,email} = req.body;
         await userForm(body)
-        console.log(email);
-        // if (email) {
-        //     return res.status(409).json({
-        //     message: `Application for ${email} has been received already`
-        //     });
-        // }else{
+    
             const content = `
             <p>Dear ${fname},</p>
             <p><b>Congratulations!</b></p>
@@ -66,74 +126,9 @@ const register = async (req, res, next) => {
         message: 'Thank you for submitting your application, we will get back to you'
       })
     }
-    //     }
-    //     res.status(200).json({
-    //         status: "Success",
-    //         code: 200,
-    //         message: "Application Successful"
-    //     })
-    // } 
     catch (error) {
         return next(error)
     }
-//   try {
-//     const { fname, lname, email, cgpa, address, course, university, isAdmin, dob } = req.body;
-//     const cv = req.file.originalname
-//     const userId = req.user.id
-//     const data = await User.findOne({ email });
-
-//     if (data) {
-//       return res.status(409).json({
-//         message: `Application for ${email} has been received already`
-//       });
-
-//     } else {
-//       const newUser = new User({
-//         fname,
-//         lname,
-//         email,
-//         cgpa,
-//         dob,
-//         address,
-//         course,
-//         university,
-//         cv,
-//         userId,
-//         isAdmin
-//       });
-//       await newUser.save();
-//       const content = `
-//             <p>Dear ${fname},</p>
-//             <p>Thank you for your interest in a career opportunity at Enyata.</p>
-//             <p> We have received and we are currently reviewing your application.</p>
-//             <p> We thank you for taking the time to explore this opportunity with the Enyata. We encourage you to visit our website at <a href='enyata.com'>enyata.com</a> for additional openings.</p>
-//             <br>
-//             <p>Enyata Recruitment Team</p>`
-
-//       var mailOptions = {
-//         from: '"Enyata Academy" <babatundeademola4@gmail.com>',
-//         to: `${email}`,
-//         subject: 'Your application: Software Developer Academy',
-//         html: content
-//       };
-
-//       transporter.sendMail(mailOptions, function (error, info) {
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           console.log('Email sent: ' + info.response);
-//         }
-//       })
-//       return res.status(201).json({
-//         message: 'Thank you for submitting your application, we will get back to you'
-//       })
-//     }
-//   } catch (err) {
-//     return next(err);
-//   }
 };
 
-module.exports = {
-    adminLog,
-    register
-}
+module.exports = { createNewUser, loginUser, forgetpassword, adminLog, register };
