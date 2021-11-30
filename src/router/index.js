@@ -5,6 +5,7 @@ const {
   createNewUser,
   loginUser,
   forgetpassword,
+  resetPassword,
 } = require("../controller/index");
 const { createUserSchema, loginUserSchema } = require("../validator");
 
@@ -17,6 +18,7 @@ router.post(
 
 router.post("/api/login", validateUser(loginUserSchema, "body"), loginUser);
 
-router.post("/forgetpassword", forgetpassword);
+router.post("/user/forgetpassword", forgetpassword);
+router.put("/user/reset-password", resetPassword);
 
 module.exports = router;

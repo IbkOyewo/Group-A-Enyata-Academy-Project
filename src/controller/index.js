@@ -1,5 +1,11 @@
-const { createUser, validatePassword, getUser } = require("../services");
+const {
+  createUser,
+  validatePassword,
+  getUser,
+  updatePassword,
+} = require("../services");
 const sendVerificationEmail = require("../utils/mailler");
+const { generate_oneTimeToken, hashPassword } = require("../utils/index");
 
 const createNewUser = async (req, res, next) => {
   try {
@@ -45,13 +51,13 @@ const loginUser = async (req, res, next) => {
 const forgetpassword = async (req, res) => {
   try {
     const userExisted = await getUser(req.body.email);
-    if (!userExisted) {
+    if (userExisted.length === 0) {
       return res.json({
         status: "failed",
         message: "User dose exist",
       });
     }
-    const oneTimeToken = generate();
+    const oneTimeToken = generate_oneTimeToken();
     sendVerificationEmail(req.body.email, oneTimeToken);
     return res
       .json({
@@ -64,4 +70,29 @@ const forgetpassword = async (req, res) => {
   }
 };
 
-module.exports = { createNewUser, loginUser, forgetpassword };
+const resetPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { verification } = req.query;
+    const user = await getUser(email);
+    const encryptedPassword = await hashPassword(password);
+    console.log("======", encryptedPassword);
+    if (user[0].onetime_token === verification) {
+      const Verified = updatePassword(email, encryptedPassword);
+      return res.json({
+        status: "success",
+        message: "updated Verified user",
+        data: Verified,
+      });
+    }
+
+    res.json({
+      status: "failed",
+      message: "not Verified user",
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+module.exports = { createNewUser, loginUser, forgetpassword, resetPassword };

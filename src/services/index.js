@@ -8,7 +8,14 @@ const getUser = (email) => db.any(queries.login, email);
 const createUser = async (body) => {
   const { firstName, lastName, email, phoneNumber, password } = body;
   const encryptedPassword = await hashPassword(password);
-  const payload = [firstName, lastName, email, phoneNumber, encryptedPassword];
+  const payload = [
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    encryptedPassword,
+    "",
+  ];
   return db.one(queries.addUser, payload);
 };
 
@@ -29,18 +36,14 @@ const validatePassword = async (email, password) => {
   return false;
 };
 
-// const updatePassword = async (req) => {
-//   const {
-//     body: { password },
-//     user: { id },
-//   } = req;
-//   const encryptedPassword = await hashPassword(password);
-//   return db.any(queries.updatePassword, [encryptedPassword, id]);
-// };
+// update reset password
+const updatePassword = (email, newPassword) => {
+  db.any(queries.updatePassword, [newPassword, "", email]);
+};
 
 module.exports = {
   createUser,
   validatePassword,
   getUser,
-  // updatePassword,
+  updatePassword,
 };

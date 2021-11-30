@@ -5,8 +5,9 @@ const query = {
          lastName,
          email,
          phoneNumber,
-         password
-     ) VALUES($1, $2, $3, $4, $5)
+         password,
+         onetime_token
+     ) VALUES($1, $2, $3, $4, $5, $6)
      RETURNING *
     `,
   login: `
@@ -14,10 +15,10 @@ const query = {
     FROM users
     WHERE email=$1 
     `,
-  //   updatePassword: `
-  //         Update users SET password=$1, onetime_token=$2
-  //         WHERE email=$3 RETURNING *
-  //     `,
+  updatePassword: `
+          Update users SET password=$1, onetime_token=$2
+          WHERE email=$3 RETURNING *
+      `,
 };
 
 module.exports = query;
