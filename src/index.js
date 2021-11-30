@@ -1,9 +1,9 @@
 const express = require('express')
-// const route = require('./routes')
+const route = require('./routes')
 const db = require('./db')
 const cors = require('cors')
 const app = express()
-const port =process.env.PORT || 4000
+const port =8000
 
 app.use(express.json())
 app.use(express.urlencoded({
@@ -14,11 +14,11 @@ app.get("/", (req, res) => {
     res.status(200).json({
         status: "Success",
         code: 200,
-        message: "Welcome"
+        message: "Welcome to Account Number Verification"
     })
 })
-// app.use(route)
-app.use(cors());
+app.use(route)
+//app.use(cors());
 
 //ERROR HANDLING
 app.use((req, res) => {
