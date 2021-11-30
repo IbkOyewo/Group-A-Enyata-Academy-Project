@@ -7,6 +7,7 @@ const {
   forgetpassword,
   register,
   adminLog,
+  resetPassword,
 } = require("../controller/index");
 const { createUserSchema, loginUserSchema } = require("../validator");
 const { validateAdmin } = require("../utils");
@@ -20,8 +21,9 @@ router.post(
 
 router.post("/api/login", validateUser(loginUserSchema, "body"), loginUser);
 
-router.post("/forgetpassword", forgetpassword);
+router.post("/user/forgetpassword", forgetpassword);
+router.put("/user/reset-password", resetPassword);
 
-router.post("/api/admin/login", validateAdmin, adminLog)
-router.post("/api/user/application", register)
+router.post("/api/admin/login", validateAdmin, adminLog);
+router.post("/api/user/application", register);
 module.exports = router;
