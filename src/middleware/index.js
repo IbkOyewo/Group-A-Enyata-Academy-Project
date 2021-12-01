@@ -31,7 +31,7 @@ const checkUser = (type) => async (req, res, next) => {
 // verify token
 const verifyToken = () => async (req, res, next) => {
   try {
-    const token = req.headers["x-access-token"] || req.query.token;
+    const token = req.headers["x-access-token"] || req.queries.token;
 
     if (!token)
       return res.status(403).json({
@@ -59,7 +59,7 @@ const validateUser = (data, type) => async (req, res, next) => {
     const getType = {
       body: req.body,
       params: req.params,
-      query: req.query,
+      queries: req.queries,
       headers: req.headers,
     };
     const options = {

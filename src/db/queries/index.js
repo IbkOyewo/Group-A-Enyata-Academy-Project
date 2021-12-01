@@ -5,8 +5,9 @@ const queries = {
          lastName,
          email,
          phoneNumber,
-         password
-     ) VALUES($1, $2, $3, $4, $5)
+         password,
+         onetime_token
+     ) VALUES($1, $2, $3, $4, $5, $6)
      RETURNING *
     `,
   login: `
@@ -14,14 +15,22 @@ const queries = {
     FROM users
     WHERE email=$1 
     `,
-    adminLogin: `
+  updateToken: `
+  update users SET onetime_token=$1
+  WHERE email=$2 RETURNING *
+`,
+  updatePassword: `
+          Update users SET password=$1, onetime_token=$2
+          WHERE email=$3 RETURNING *
+      `,
+  adminLogin: `
     INSERT INTO admin (
         email,
         password
     ) VALUES ($1,$2)
     RETURNING *
      `,
-     userApplication: `
+  userApplication: `
      INSERT INTO userApplication (
          fname,
          lname,
@@ -53,6 +62,6 @@ const queries = {
       optionD
   ) VALUES ($1, $2, $3, $4, $5, $6)
   `
-}
+};
 
-module.exports = queries
+module.exports = queries;
