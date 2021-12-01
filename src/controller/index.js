@@ -1,4 +1,4 @@
-const {logAdmin, userForm} = require("../services")
+const {logAdmin, userForm, adminCreateApplication} = require("../services")
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv')
 const { createUser, validatePassword, getUser } = require("../services");
@@ -131,4 +131,19 @@ const register = async (req, res, next) => {
     }
 };
 
-module.exports = { createNewUser, loginUser, forgetpassword, adminLog, register };
+const createNewApplication = async (req, res) => {
+  try {
+    await adminCreateApplication(req.body);
+    return res.status(200).json({
+      status: 'Success',
+      message: 'Application advert sent successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'Fail',
+      message: 'Something went wrong',
+    });
+  }
+};
+module.exports = { createNewUser, loginUser, forgetpassword, adminLog, register, createNewApplication };

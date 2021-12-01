@@ -33,7 +33,26 @@ const queries = {
          dob
      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
      RETURNING *
-      `
+      `,
+      setNewApplication: `
+      INSERT INTO application_details (
+        batchId,
+        imageUrl,
+        applicationLink,
+        closureDate,
+        instructions
+    ) VALUES ($1, $2, $3, $4, $5)
+    `,
+    composeAssessment: `
+    INSERT INTO assessments (
+      imageUrl,
+      questions,
+      optionA,
+      optionB,
+      optionC,
+      optionD
+  ) VALUES ($1, $2, $3, $4, $5, $6)
+  `
 }
 
 module.exports = queries

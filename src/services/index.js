@@ -40,10 +40,22 @@ const userForm= async (data) => {
     return db.any(queries.userApplication, payload)
 }
 
+const adminCreateApplication = async (data) => {
+  const payload = [data.batchId, data.imageUrl, data.applicationLink, data.closureDate, data.instructions]
+  return db.none(queries.setNewApplication,payload);
+};
+
+const adminComposeAssessment = async (data) => {
+  const payload = [data.imageUrl, data.questions, data.optionA, data.optionB, data.optionC, data.optionD]
+  return db.none(queries.composeAssessment,payload);
+};
+
 module.exports = {
   createUser,
   validatePassword,
   getUser,
   logAdmin,
-  userForm
+  userForm,
+  adminCreateApplication,
+  adminComposeAssessment
 };
