@@ -16,7 +16,7 @@ const checkUser = (type) => async (req, res, next) => {
       if (!user) {
         return res.json({
           status: "failed",
-          message: "User dose not exist",
+          message: "User does not exist",
         });
       }
     }
@@ -29,17 +29,18 @@ const checkUser = (type) => async (req, res, next) => {
 };
 
 // verify token
-const verifyToken = () => async (req, res, next) => {
+const verifyToken = (type) => async (req, res, next) => {
   try {
+    type === 'admin'
     const token = req.headers["x-access-token"] || req.queries.token;
-
+  
     if (!token)
       return res.status(403).json({
         status: "fail",
         message: "No token provided.",
       });
 
-    const tokenValidated = jwt.verify(token, process.env.RESET_TOKEN_KEY);
+    const tokenValidated = jwt.verify(token, process.env.TOKEN_KEY);
     if (!tokenValidated) {
       return res.status(403).json({
         status: "fail",

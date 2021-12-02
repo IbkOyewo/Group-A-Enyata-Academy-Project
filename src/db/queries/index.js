@@ -20,8 +20,8 @@ const queries = {
   WHERE email=$2 RETURNING *
 `,
   updatePassword: `
-          Update users SET password=$1, onetime_token=$2
-          WHERE email=$3 RETURNING *
+    Update users SET password=$1, onetime_token=$2
+    WHERE email=$3 RETURNING *
       `,
   adminLogin: `
     INSERT INTO admin (
@@ -39,13 +39,34 @@ const queries = {
          address,
          course,
          university,
-         dob
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         dob,
+         cv,
+         image
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *
       `,
+  setNewApplication: `
+      INSERT INTO application_details (
+        batchId,
+        imageUrl,
+        applicationLink,
+        closureDate,
+        instructions
+    ) VALUES ($1, $2, $3, $4, $5)
+    `,
+  composeAssessment: `
+    INSERT INTO assessments (
+      imageUrl,
+      questions,
+      optionA,
+      optionB,
+      optionC,
+      optionD
+  ) VALUES ($1, $2, $3, $4, $5, $6)
+  `,
+  getAssessment: `
+    SELECT * FROM assessments 
+    `
 };
 
 module.exports = queries;
-
-
-// module.exports = query;
