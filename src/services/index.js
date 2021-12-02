@@ -45,7 +45,6 @@ const updatePassword = (email, newPassword) => {
   db.any(queries.updatePassword, [newPassword, "", email]);
 };
 
-// Mary
 const logAdmin = async (data) => {
   const payload = [data.email, data.password];
   return db.any(queries.adminLogin, payload);
@@ -61,9 +60,23 @@ const userForm = async (data) => {
     data.course,
     data.university,
     data.dob,
+    data.cv,
+    data.image
   ];
   return db.any(queries.userApplication, payload);
 };
+
+const adminCreateApplication = async (data) => {
+  const payload = [data.batchId, data.imageUrl, data.applicationLink, data.closureDate, data.instructions]
+  return db.none(queries.setNewApplication,payload);
+};
+
+const adminComposeAssessment = async (data) => {
+  const payload = [data.imageUrl, data.questions, data.optionA, data.optionB, data.optionC, data.optionD]
+  return db.none(queries.composeAssessment,payload);
+};
+
+const getAssessment = () => db.any(queries.getAssessment);
 
 module.exports = {
   createUser,
@@ -73,4 +86,7 @@ module.exports = {
   updatePassword,
   logAdmin,
   userForm,
+  adminCreateApplication,
+  adminComposeAssessment,
+  getAssessment
 };

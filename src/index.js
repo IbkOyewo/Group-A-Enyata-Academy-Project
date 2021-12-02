@@ -3,7 +3,10 @@ const app = express()
 const route = require("./router");
 const db = require("./db");
 const cors = require("cors");
-const port = process.env.PORT || 4400;
+const dotenv = require("dotenv");
+dotenv.config();
+
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(
@@ -17,8 +20,9 @@ app.get("/", (req, res) => {
     status: "Success",
     code: 200,
     message: "Welcome",
-  });
+  }); 
 });
+
 app.use(route);
 app.use(cors());
 
