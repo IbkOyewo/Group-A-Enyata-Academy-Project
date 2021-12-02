@@ -39,8 +39,10 @@ const queries = {
          address,
          course,
          university,
-         dob
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         dob,
+         cv,
+         image
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *
       `,
       setNewApplication: `
@@ -61,7 +63,10 @@ const queries = {
       optionC,
       optionD
   ) VALUES ($1, $2, $3, $4, $5, $6)
-  `
+  `,
+  getAssessment: `
+    SELECT * FROM assessments 
+    `
 };
 
 module.exports = queries;

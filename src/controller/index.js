@@ -1,6 +1,6 @@
-const {logAdmin, userForm, adminCreateApplication} = require("../services")
-const nodemailer = require('nodemailer');
+const {logAdmin, userForm, adminCreateApplication, adminComposeAssessment, getAssessment} = require("../services")
 const dotenv = require('dotenv')
+const multer = require('multer')
 const {
   createUser,
   validatePassword,
@@ -8,8 +8,12 @@ const {
   updateToken,
   updatePassword,
 } = require("../services");
+const sendApplicationEmail =  require("../utils/mailler");
 const sendVerificationEmail = require("../utils/mailler");
-const { generate_oneTimeToken, hashPassword } = require("../utils/index");
+const { generate_oneTimeToken, hashPassword, generateAdminToken } = require("../utils/index");
+const { verifyToken } = require("../middleware");
+const { cloudinaryConfig } = require("../utils/helpers");
+const {cloudinaryUpload, cloudinaryApplicationUpload, cloudinaryAssessmentUpload} = require("../middleware/fileUpload");
 dotenv.config();
 
 const createNewUser = async (req, res, next) => {
@@ -100,62 +104,33 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// mary
 const adminLog = async (req, res, next) => {
   try {
     const { body } = req;
     await logAdmin(body);
+    const token = await generateAdminToken(body)
+
     res.status(200).json({
       status: "Success",
-      code: 200,
       message: "Admin login Successful",
+      token: token
     });
   } catch (error) {
     return next(error);
   }
 };
 
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: `${process.env.EMAIL}`,
-    pass: `${process.env.PASSWORD}`,
-  },
-});
-
 const register = async (req, res, next) => {
   try {
     const { body } = req;
-    const { fname, email } = req.body;
+    const { email } = req.body;
+
+    await cloudinaryUpload(body)
     await userForm(body);
-
-    const content = `
-            <p>Dear ${fname},</p>
-            <p><b>Congratulations!</b></p>
-            <p>We are thrilled to inform you that you have successfully applied for the Enyata 2022 Academy.</p>
-            <p> We are currently reviewing your application.</p>
-            <p>If selected, you would get an email confirming your acceptance into the Academy.</p>
-            <br>
-            <p><b>Warmest regards.</b></p>
-            <p> <a href='enyata.com'>Enyata</a></p>`;
-
-    var mailOptions = {
-      from: '"Enyata Academy"',
-      to: email,
-      subject: "Your application: Software Developer Academy",
-      html: content,
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    await sendApplicationEmail(body);
     return res.status(201).json({
       message:
-        "Thank you for submitting your application, we will get back to you",
+        `Application successfully received.`
     });
   } catch (error) {
     return next(error);
@@ -164,10 +139,50 @@ const register = async (req, res, next) => {
 
 const createNewApplication = async (req, res) => {
   try {
+    const { body} = req;
+    await cloudinaryApplicationUpload(body);
     await adminCreateApplication(req.body);
+    
+
     return res.status(200).json({
       status: 'Success',
       message: 'Application advert sent successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'Fail',
+      message: 'Something went wrong',
+    });
+  }
+};
+
+const composeAssessment = async (req, res) => {
+  try {
+    const { body} = req;
+    await cloudinaryAssessmentUpload(body)
+    await adminComposeAssessment(req.body);
+    return res.status(201).json({
+      status: 'Success',
+      message: 'Assessment Composed successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'Fail',
+      message: 'Something went wrong',
+    });
+  }
+};
+
+const takeAssessment = async (req, res) => {
+  try {
+    const { body} = req;
+    const assessment = await getAssessment(body);
+    return res.status(201).json({
+      status: 'Success',
+      message: 'Assessments Gotten successfully',
+      data: assessment
     });
   } catch (error) {
     console.log(error);
@@ -185,5 +200,7 @@ module.exports = {
   resetPassword,
   adminLog,
   register,
-  createNewApplication
+  createNewApplication,
+  composeAssessment,
+  takeAssessment
 };

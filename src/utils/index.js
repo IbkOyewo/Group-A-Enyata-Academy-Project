@@ -19,6 +19,26 @@ const validateAdmin = async(req,res,next) =>{
     }
 }
 
+const generateAdminToken = async (user) => {
+  const token = jwt.sign({
+          user_id: user.id,
+          email: user.email
+      },
+      process.env.TOKEN_KEY, {
+          expiresIn: '1h',
+      }
+  )
+  return token
+}
+
+const validateAdminToken = async token => {
+  try {
+      return jwt.verify(token, process.env.TOKEN_KEY)
+  } catch (err) {
+      return false
+  }
+}
+
 //Encrypt user password
 const hashPassword = async (password) => {
   const encryptedPassword = await bcrypt.hash(password, 10);
@@ -54,6 +74,8 @@ module.exports = {
   hashPassword,
   comparePassword,
   generateToken,
+  generateAdminToken,
+  validateAdminToken,
   generate_oneTimeToken,
   validateAdmin
 };

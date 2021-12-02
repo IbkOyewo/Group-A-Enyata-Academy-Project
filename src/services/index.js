@@ -60,6 +60,8 @@ const userForm = async (data) => {
     data.course,
     data.university,
     data.dob,
+    data.cv,
+    data.image
   ];
   return db.any(queries.userApplication, payload);
 };
@@ -74,6 +76,8 @@ const adminComposeAssessment = async (data) => {
   return db.none(queries.composeAssessment,payload);
 };
 
+const getAssessment = () => db.any(queries.getAssessment);
+
 module.exports = {
   createUser,
   validatePassword,
@@ -83,5 +87,6 @@ module.exports = {
   logAdmin,
   userForm,
   adminCreateApplication,
-  adminComposeAssessment
+  adminComposeAssessment,
+  getAssessment
 };
