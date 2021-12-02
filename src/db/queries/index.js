@@ -20,8 +20,8 @@ const queries = {
   WHERE email=$2 RETURNING *
 `,
   updatePassword: `
-          Update users SET password=$1, onetime_token=$2
-          WHERE email=$3 RETURNING *
+    Update users SET password=$1, onetime_token=$2
+    WHERE email=$3 RETURNING *
       `,
   adminLogin: `
     INSERT INTO admin (
@@ -45,7 +45,7 @@ const queries = {
      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *
       `,
-      setNewApplication: `
+  setNewApplication: `
       INSERT INTO application_details (
         batchId,
         imageUrl,
@@ -54,7 +54,7 @@ const queries = {
         instructions
     ) VALUES ($1, $2, $3, $4, $5)
     `,
-    composeAssessment: `
+  composeAssessment: `
     INSERT INTO assessments (
       imageUrl,
       questions,

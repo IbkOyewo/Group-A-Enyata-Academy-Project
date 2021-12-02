@@ -23,18 +23,6 @@ const cloudinaryConfig = async (request, response) => {
   } catch (error) {
     return error;
   }
-
-  // .then((result) => {
-  //   response.status(200).send({
-  //     message: "success",
-  //     data: result.secure_url,
-  //   });
-  // }).catch((error) => {
-  //   response.status(500).send({
-  //     message: "failure",
-  //     error,
-  //   });
-  // });
 }
 
 const cloudinaryApplicationConfig = async (request, response) => {

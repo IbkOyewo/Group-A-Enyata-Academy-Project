@@ -1,6 +1,5 @@
 const {logAdmin, userForm, adminCreateApplication, adminComposeAssessment, getAssessment} = require("../services")
 const dotenv = require('dotenv')
-const multer = require('multer')
 const {
   createUser,
   validatePassword,
@@ -11,8 +10,6 @@ const {
 const sendApplicationEmail =  require("../utils/mailler");
 const sendVerificationEmail = require("../utils/mailler");
 const { generate_oneTimeToken, hashPassword, generateAdminToken } = require("../utils/index");
-const { verifyToken } = require("../middleware");
-const { cloudinaryConfig } = require("../utils/helpers");
 const {cloudinaryUpload, cloudinaryApplicationUpload, cloudinaryAssessmentUpload} = require("../middleware/fileUpload");
 dotenv.config();
 
