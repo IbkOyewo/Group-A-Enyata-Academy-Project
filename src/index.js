@@ -42,7 +42,7 @@ db.connect()
         });
     })
     .catch((error) => {
-        console.log("error");
+        console.log(error.message);
     });
 
 module.exports = app
