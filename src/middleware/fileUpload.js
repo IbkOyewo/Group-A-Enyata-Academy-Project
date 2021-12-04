@@ -1,5 +1,7 @@
 const {
-  cloudinaryConfig, cloudinaryApplicationConfig, cloudinaryAssessmentConfig
+  cloudinaryConfig,
+  cloudinaryApplicationConfig,
+  cloudinaryAssessmentConfig
 } = require("../utils/helpers");
 
 
@@ -30,4 +32,8 @@ const cloudinaryAssessmentUpload = async (req, res, next) => {
     console.log(error);
   }
 };
-module.exports = { cloudinaryUpload, cloudinaryApplicationUpload, cloudinaryAssessmentUpload }
+module.exports = {
+  cloudinaryUpload,
+  cloudinaryApplicationUpload,
+  cloudinaryAssessmentUpload
+}

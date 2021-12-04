@@ -6,13 +6,20 @@ const validateAdmin = async(req,res,next) =>{
     console.log(req.body);
     try {
         const { body:{email, password}} = req;
-        if (email !== 'admin@enyata.com' && password !== 'admin'){
+        if (email !== 'admin@enyata.com'){
             return res.status(400).json({
                 status:"Failed",
                 message:  'You are not authorised to proceed',
             })
             
         }
+        if (password !== 'admin'){
+          return res.status(400).json({
+              status:"Failed",
+              message:  'You are not authorised to proceed',
+          })
+          
+      }
        return next()
     } catch (error) {
         return next(error)
@@ -76,6 +83,6 @@ module.exports = {
   generateToken,
   generateAdminToken,
   validateAdminToken,
-  generate_oneTimeToken,
-  validateAdmin
+  validateAdmin,
+  generate_oneTimeToken
 };
