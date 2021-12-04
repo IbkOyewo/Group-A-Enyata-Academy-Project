@@ -18,6 +18,17 @@ const loginUserSchema = {
   }),
 };
 
+const registerAdminSchema = {
+  schema: Joi.object().keys({
+    name: Joi.string().required,
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    phoneNumber: Joi.string().required,
+    country: Joi.string().required,
+    address: Joi.string().required,
+  }),
+};
+
 const loginAdminSchema = {
   schema: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -63,6 +74,7 @@ const composeAssessmentSchema = {
 module.exports = {
   createUserSchema,
   loginUserSchema,
+  registerAdminSchema,
   loginAdminSchema,
   userapplicationSchema,
   setapplicationSchema,
