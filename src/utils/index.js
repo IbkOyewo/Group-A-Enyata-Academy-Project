@@ -58,7 +58,7 @@ const comparePassword = async (password, userPassword) => {
 };
 
 const generateToken = (user) => {
-  const token = jwt.sign(user, process.env.RESET_TOKEN_KEY, {
+  const token = jwt.sign(user, process.env.TOKEN_KEY, {
     expiresIn: "24h",
   });
   return token;
