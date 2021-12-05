@@ -1,5 +1,5 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const app = express();
 const route = require("./router");
 const db = require("./db");
 const cors = require("cors");
@@ -15,38 +15,43 @@ app.use(
   })
 );
 
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 app.get("/", (req, res) => {
   res.status(200).json({
     status: "Success",
     code: 200,
     message: "Welcome",
-  }); 
+  });
 });
 
 app.use(route);
-app.use(cors());
 
 //ERROR HANDLING
 app.use((req, res) => {
-    res.status(404).json({
-        status: "Not Found",
-    })
-})
+  res.status(404).json({
+    status: "Not Found",
+  });
+});
 app.use((err, req, res, next) => {
-    res.status(400).json({
-        status: "Failed",
-        message: err.message
-    })
-})
+  res.status(400).json({
+    status: "Failed",
+    message: err.message,
+  });
+});
 
 db.connect()
-    .then((obj) => {
-        app.listen(port, () => {
-            console.log(`Starting on port ${port}`);
-        });
-    })
-    .catch((error) => {
-        console.log(error.message);
+  .then((obj) => {
+    app.listen(port, () => {
+      console.log(`Starting on port ${port}`);
     });
+  })
+  .catch((error) => {
+    console.log(error.message);
+  });
 
-module.exports = app
+module.exports = app;

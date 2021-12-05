@@ -16,12 +16,23 @@ const queries = {
     WHERE email=$1 
     `,
   updateToken: `
-  update users SET onetime_token=$1
+  UPDATE users SET onetime_token=$1
   WHERE email=$2 RETURNING *
 `,
   updatePassword: `
-    Update users SET password=$1, onetime_token=$2
+    UPDATE users SET password=$1, onetime_token=$2
     WHERE email=$3 RETURNING *
+      `,
+  adminRegister: `
+      INSERT INTO adminregister (
+        name,
+        email,
+        password,
+        phoneNumber,
+        country,
+        address
+    ) VALUES ($1,$2,$3,$4,$5,$6)
+    RETURNING *
       `,
   adminLogin: `
     INSERT INTO admin (
@@ -66,7 +77,18 @@ const queries = {
   `,
   getAssessment: `
     SELECT * FROM assessments 
-    `
+    `,
+  getUserProfile: `
+    SELECT * FROM userApplication
+     `,
+  getAdminProfile: `
+    SELECT * FROM adminregister
+     `,
+  getResults: `
+    SELECT userapplication.id, fname, lname, email,dob,address, university, cpga,test_results.id, testscores FROM userapplication
+    INNER JOIN test_results
+    ON userapplication.id = test_results.id
+    `,
 };
 
 module.exports = queries;
