@@ -93,7 +93,6 @@ router.post(
 );
 router.post("/api/login", validateUser(loginUserSchema, "body"), loginUser);
 router.post("/forgetpassword", forgetpassword);
-router.post("/user/forgetpassword", forgetpassword);
 router.put("/user/reset-password", resetPassword);
 router.post(
   "/api/user/application",

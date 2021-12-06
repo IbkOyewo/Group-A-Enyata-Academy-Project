@@ -88,7 +88,8 @@ const forgetpassword = async (req, res) => {
         message: "User does not exist",
       });
     }
-    const oneTimeToken = generateResetToken();
+
+    const oneTimeToken = generateResetToken(userExisted[0]);
     const verifyuserToken = await updateToken(req.body.email, oneTimeToken);
     sendVerificationEmail(req.body.email, oneTimeToken);
     return res

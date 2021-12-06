@@ -59,18 +59,18 @@ const generateToken = (user) => {
   return token;
 };
 
-// const generateResetToken = (user) => {
-//   const token = jwt.sign(
-//     { user_id: user.id, email: user.email },
-//     process.env.RESET_TOKEN_KEY,
-//     {
-//       expiresIn: "1h",
-//     }
-//   );
-//   return token;
-// };
+const generateResetToken = (user) => {
+  const token = jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.RESET_TOKEN_KEY,
+    {
+      expiresIn: "1h",
+    }
+  );
+  return token;
+};
 
-const generateResetToken = () => Math.floor(100000 + Math.random() * 900000);
+// const generateResetToken = () => Math.floor(100000 + Math.random() * 900000);
 
 module.exports = {
   hashPassword,
