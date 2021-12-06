@@ -1,22 +1,13 @@
+const { any } = require("bluebird");
 const db = require("../db");
 const queries = require("../db/queries");
-const {
-  hashPassword,
-  comparePassword,
-  generateToken
-} = require("../utils");
+const { hashPassword, comparePassword, generateToken } = require("../utils");
 
 // getting user
 const getUser = (email) => db.any(queries.login, email);
 
 const createUser = async (body) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    password
-  } = body;
+  const { firstName, lastName, email, phoneNumber, password } = body;
   const encryptedPassword = await hashPassword(password);
   const payload = [
     firstName,
@@ -30,18 +21,18 @@ const createUser = async (body) => {
 };
 
 const validateAdminPassword = async (user, password) => {
-  console.log(user)
-  const isValid = await comparePassword(password, user.password)
-  console.log(password, user.password)
+  console.log(user);
+  const isValid = await comparePassword(password, user.password);
+  console.log(password, user.password);
   if (isValid) {
-    const token = await generateToken(user)
+    const token = await generateToken(user);
     return {
-      token
-    }
+      token,
+    };
   }
   //console.log(isValid)
-  return false
-}
+  return false;
+};
 
 const validatePassword = async (email, password) => {
   const user = await getUser(email);
@@ -61,8 +52,8 @@ const validatePassword = async (email, password) => {
 };
 
 // to updata token
-const updateToken = (email, token) => db.any(queries.updateToken, [token, email])
-
+const updateToken = (email, token) =>
+  db.any(queries.updateToken, [token, email]);
 
 // update reset password
 const updatePassword = (email, newPassword) => {
@@ -70,16 +61,16 @@ const updatePassword = (email, newPassword) => {
 };
 
 const createAdmin = async (body) => {
-  const {
+  const { name, email, password, phoneNumber, country, address } = body;
+  const encryptedPassword = await hashPassword(password);
+  const payload = [
     name,
     email,
-    password,
+    encryptedPassword,
     phoneNumber,
     country,
-    address
-  } = body;
-  const encryptedPassword = await hashPassword(password);
-  const payload = [name, email, encryptedPassword, phoneNumber, country, address];
+    address,
+  ];
   return db.one(queries.adminRegister, payload);
 };
 
@@ -100,20 +91,46 @@ const userForm = async (data) => {
     data.university,
     data.dob,
     data.cv,
-    data.image
+    data.image,
   ];
   return db.any(queries.userApplication, payload);
 };
 
 const adminCreateApplication = async (data) => {
-  const payload = [data.batchId, data.imageUrl, data.applicationLink, data.closureDate, data.instructions]
+  const payload = [
+    data.batchId,
+    data.imageUrl,
+    data.applicationLink,
+    data.closureDate,
+    data.instructions,
+  ];
   return db.none(queries.setNewApplication, payload);
 };
 
 const adminComposeAssessment = async (data) => {
-  const payload = [data.imageUrl, data.questions, data.optionA, data.optionB, data.optionC, data.optionD]
+  const payload = [
+    data.imageUrl,
+    data.questions,
+    data.optionA,
+    data.optionB,
+    data.optionC,
+    data.optionD,
+  ];
   return db.none(queries.composeAssessment, payload);
 };
+
+const submitAssessment = (data) => {
+  const playload = [
+    data.batch,
+    data.dateComposed,
+    data.NoofQuestions,
+    data.timeAllocated,
+    data.status,
+  ];
+  db.any(queries.submit_assessment, playload);
+};
+
+const assessmentHistory = () => db.any(queries.assessmentHistory);
 
 const getAssessment = () => db.any(queries.getAssessment);
 
@@ -122,6 +139,15 @@ const getUserProfile = () => db.any(queries.getUserProfile);
 const getAdminProfile = () => db.any(queries.getAdminProfile);
 
 const getResults = () => db.any(queries.getResults);
+
+const total_batchId = (batchId) => db.any(queries.total_batchId, [batchId]);
+
+const total_application = () => db.any(queries.total_application);
+
+const current_application = () => db.any(queries.current_application);
+
+const batchEntries = () => db.any(queries.batchEntries);
+
 module.exports = {
   createUser,
   validatePassword,
@@ -137,5 +163,11 @@ module.exports = {
   getAssessment,
   getUserProfile,
   getAdminProfile,
-  getResults
+  getResults,
+  current_application,
+  total_application,
+  total_batchId,
+  batchEntries,
+  submitAssessment,
+  assessmentHistory,
 };

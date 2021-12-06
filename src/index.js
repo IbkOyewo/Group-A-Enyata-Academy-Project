@@ -1,5 +1,5 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const app = express();
 const route = require("./router");
 const db = require("./db");
 const cors = require("cors");
@@ -15,9 +15,11 @@ app.use(
   })
 );
 
-app.use(cors({
-  origin: '*'
-}));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -29,19 +31,18 @@ app.get("/", (req, res) => {
 
 app.use(route);
 
-
 //ERROR HANDLING
 app.use((req, res) => {
   res.status(404).json({
     status: "Not Found",
-  })
-})
+  });
+});
 app.use((err, req, res, next) => {
   res.status(400).json({
     status: "Failed",
-    message: err.message
-  })
-})
+    message: err.message,
+  });
+});
 
 db.connect()
   .then((obj) => {
@@ -50,7 +51,7 @@ db.connect()
     });
   })
   .catch((error) => {
-    console.log("error");
+    console.log(error.message);
   });
 
-module.exports = app
+module.exports = app;
