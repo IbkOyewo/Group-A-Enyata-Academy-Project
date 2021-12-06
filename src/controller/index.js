@@ -8,9 +8,11 @@ const {
   createAdmin,
   validateAdminPassword,
   getResults,
-  getAdminProfile
-} = require("../services")
-const dotenv = require('dotenv')
+  getAdminProfile,
+  submitAssessment,
+  assessmentHistory,
+} = require("../services");
+const dotenv = require("dotenv");
 const {
   createUser,
   validatePassword,
@@ -25,7 +27,7 @@ const {
 const sendApplicationEmail = require("../utils/mailler");
 const sendVerificationEmail = require("../utils/mailler");
 const {
-  generate_oneTimeToken,
+  generateResetToken,
   hashPassword,
   generateAdminToken,
 } = require("../utils/index");
@@ -86,7 +88,7 @@ const forgetpassword = async (req, res) => {
         message: "User does not exist",
       });
     }
-    const oneTimeToken = generate_oneTimeToken();
+    const oneTimeToken = generateResetToken();
     const verifyuserToken = await updateToken(req.body.email, oneTimeToken);
     sendVerificationEmail(req.body.email, oneTimeToken);
     return res
@@ -394,6 +396,42 @@ const getEntries = async (req, res) => {
         .status(201);
     }
   } catch (error) {
+    return console.log(error.message);
+  }
+};
+
+const submittedAssessment = async (req, res, next) => {
+  try {
+    const data = await submitAssessment(req.body);
+
+    res.status(200).json({
+      status: "Success",
+      message: "Successfully submitted assessment",
+      data,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getassessmentHistory = async (req, res) => {
+  try {
+    const data = await assessmentHistory(req.body);
+    if (data.length === 0) {
+      res.json({
+        status: "Success",
+        message: "No assessment yet",
+      });
+    } else {
+      res
+        .json({
+          status: "Success",
+          message: "all assessment history",
+          data,
+        })
+        .status(201);
+    }
+  } catch (error) {
     console.log(error.message);
   }
 };
@@ -414,6 +452,8 @@ module.exports = {
   getAdminDetails,
   currentApplication,
   total_applications,
+  submittedAssessment,
+  getassessmentHistory,
   totalBatch,
   getEntries,
 };

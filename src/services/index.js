@@ -119,6 +119,19 @@ const adminComposeAssessment = async (data) => {
   return db.none(queries.composeAssessment, payload);
 };
 
+const submitAssessment = (data) => {
+  const playload = [
+    data.batch,
+    data.dateComposed,
+    data.NoofQuestions,
+    data.timeAllocated,
+    data.status,
+  ];
+  db.any(queries.submit_assessment, playload);
+};
+
+const assessmentHistory = () => db.any(queries.assessmentHistory);
+
 const getAssessment = () => db.any(queries.getAssessment);
 
 const getUserProfile = () => db.any(queries.getUserProfile);
@@ -155,4 +168,6 @@ module.exports = {
   total_application,
   total_batchId,
   batchEntries,
+  submitAssessment,
+  assessmentHistory,
 };

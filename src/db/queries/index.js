@@ -42,7 +42,7 @@ const queries = {
     RETURNING *
      `,
   userApplication: `
-     INSERT INTO userApplication (
+     INSERT INTO userapplication (
          fname,
          lname,
          email,
@@ -65,7 +65,7 @@ const queries = {
          address,
          university,
          dob
-         FROM userApplication
+         FROM userapplication
          ORDER BY fname
   `,
   setNewApplication: `
@@ -110,6 +110,18 @@ const queries = {
   `,
   current_application: `
   SELECT * FROM application_details
+  `,
+  submit_assessment: `
+      INSERT INTO assessmentHistory (
+         batch,
+        dateComposed,
+        NoofQuestions,
+        timeAllocated,
+        status
+    ) VALUES ($1, $2, $3, $4, $5)
+    `,
+  assessmentHistory: `
+  SELECT * FROM assessmentHistory
   `,
 };
 

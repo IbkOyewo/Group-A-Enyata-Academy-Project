@@ -15,7 +15,7 @@ const sendVerificationEmail = (email, token) => {
   });
 
   const mailOptions = {
-    from: "liegeubani@gmail.com",
+    from: Email,
     to: email,
     subject: "Verify your new account",
     html: `<p>To verify your email address, please click the link below </p> <br>

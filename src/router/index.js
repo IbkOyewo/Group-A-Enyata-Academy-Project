@@ -19,6 +19,8 @@ const {
   total_applications,
   totalBatch,
   getEntries,
+  submittedAssessment,
+  getassessmentHistory,
 } = require("../controller/index");
 const {
   createUserSchema,
@@ -59,20 +61,6 @@ router.get("/api/user/profile", verifyToken("admin"), getUserDetails);
 router.get("/api/user/results", verifyToken("admin"), getUserResults);
 router.get("/api/admin/profile", verifyToken("admin"), getAdminDetails);
 
-//ADMIN ENDPOINTS
-router.post("/api/admin/login", validateUser(loginAdminSchema), adminLog);
-router.post(
-  "/api/admin/application",
-  validateUser(setapplicationSchema),
-  verifyToken("admin"),
-  createNewApplication
-);
-router.post(
-  "/api/admin/compose-assessment",
-  validateUser(composeAssessmentSchema),
-  verifyToken("admin"),
-  composeAssessment
-);
 router.get(
   "/api/admin/total_applications",
   verifyToken("admin"),
@@ -81,12 +69,20 @@ router.get(
 router.get("/api/admin/total_batch", verifyToken("admin"), totalBatch);
 
 router.get(
-  "/api/admin/current_pplications",
+  "/api/admin/current_applications",
   verifyToken("admin"),
   currentApplication
 );
 
 router.get("/api/admin/batch_entries", verifyToken("admin"), getEntries);
+
+router.get(
+  "/api/admin/assessment_history",
+  verifyToken("admin"),
+  getassessmentHistory
+);
+
+router.post("/api/admin/submit_assessment", submittedAssessment);
 
 //APPLICANT ENDPOINTS
 router.post(
