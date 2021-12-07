@@ -29,27 +29,12 @@ const createUser = async (body) => {
   return db.one(queries.addUser, payload);
 };
 
-const validateAdminPassword = async (user, password) => {
-  console.log(user)
-  const isValid = await comparePassword(password, user.password)
-  console.log(password, user.password)
-  if (isValid) {
-    const token = await generateToken(user)
-    return {
-      token
-    }
-  }
-  //console.log(isValid)
-  return false
-}
-
 const validatePassword = async (email, password) => {
   const user = await getUser(email);
 
   if (user.length === 1) {
     const isValid = await comparePassword(password, user[0].password);
     const userdata = user[0];
-    console.log(userdata);
     if (isValid) {
       const token = generateToken({
         id: userdata.id,
@@ -60,9 +45,24 @@ const validatePassword = async (email, password) => {
   return false;
 };
 
+const validateAdminPassword = async (email, password) => {
+  const admin = await logAdmin(email);
+
+  if (admin.length === 1) {
+    const isValid = await comparePassword(password, admin[0].password);
+    const data = admin[0];
+    if (isValid) {
+      const token = generateToken({
+        id: data.id,
+        email: data.email
+      });
+      return token;
+    }
+  }
+  return false;
+};
 // to updata token
 const updateToken = (email, token) => db.any(queries.updateToken, [token, email])
-
 
 // update reset password
 const updatePassword = (email, newPassword) => {
@@ -84,17 +84,14 @@ const createAdmin = async (body) => {
 };
 
 //const getAdmin = (email, password) => db.any(queries.adminLogin, [email, password])
-const logAdmin = async (data) => {
-  const payload = [data.email, data.password];
-  return db.any(queries.adminLogin, payload);
-};
+const logAdmin = (email) => db.any(queries.adminLogin, email);
 
 const userForm = async (data) => {
   const payload = [
     data.fname,
     data.lname,
     data.email,
-    data.cpga,
+    data.cgpa,
     data.address,
     data.course,
     data.university,

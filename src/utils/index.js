@@ -2,29 +2,29 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const validateAdmin = async(req,res,next) =>{
-    console.log(req.body);
-    try {
-        const { body:{email, password}} = req;
-        if (email !== 'admin@enyata.com'){
-            return res.status(400).json({
-                status:"Failed",
-                message:  'You are not authorised to proceed',
-            })
+// const validateAdmin = async(req,res,next) =>{
+//     console.log(req.body);
+//     try {
+//         const { body:{email, password}} = req;
+//         if (email !== 'admin@enyata.com'){
+//             return res.status(400).json({
+//                 status:"Failed",
+//                 message:  'You are not authorised to proceed',
+//             })
             
-        }
-        if (password !== 'admin'){
-          return res.status(400).json({
-              status:"Failed",
-              message:  'You are not authorised to proceed',
-          })
+//         }
+//         if (password !== 'admin'){
+//           return res.status(400).json({
+//               status:"Failed",
+//               message:  'You are not authorised to proceed',
+//           })
           
-      }
-       return next()
-    } catch (error) {
-        return next(error)
-    }
-}
+//       }
+//        return next()
+//     } catch (error) {
+//         return next(error)
+//     }
+// }
 
 const generateAdminToken = async (user) => {
   const token = jwt.sign({
@@ -58,8 +58,8 @@ const comparePassword = async (password, userPassword) => {
 };
 
 const generateToken = (user) => {
-  const token = jwt.sign(user, process.env.RESET_TOKEN_KEY, {
-    expiresIn: "24h",
+  const token = jwt.sign(user, process.env.TOKEN_KEY, {
+    expiresIn: "1hr",
   });
   return token;
 };
@@ -83,6 +83,5 @@ module.exports = {
   generateToken,
   generateAdminToken,
   validateAdminToken,
-  validateAdmin,
   generate_oneTimeToken
 };

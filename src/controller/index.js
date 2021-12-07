@@ -1,5 +1,4 @@
 const {
-  logAdmin,
   userForm,
   adminCreateApplication,
   adminComposeAssessment,
@@ -22,8 +21,7 @@ const sendApplicationEmail = require("../utils/mailler");
 const sendVerificationEmail = require("../utils/mailler");
 const {
   generate_oneTimeToken,
-  hashPassword,
-  generateAdminToken
+  hashPassword
 } = require("../utils/index");
 const {
   cloudinaryUpload,
@@ -43,13 +41,11 @@ const createNewUser = async (req, res, next) => {
       ...user
     } = newUser;
 
-    res
-      .json({
+    res.status(201).json({
         status: "success",
         message: `created successfully`,
         data: user,
-      })
-      .status(201);
+      });
   } catch (error) {
     next(error);
   }
@@ -69,10 +65,10 @@ const loginUser = async (req, res, next) => {
         message: "Invalid credentials",
       });
     } else {
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         message: "User is authenticated ",
-        data: req.body,
+        //data: req.body,
         token,
       });
     }
@@ -81,11 +77,12 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+
 const forgetpassword = async (req, res) => {
   try {
     const userExisted = await getUser(req.body.email);
     if (userExisted.length === 0) {
-      return res.json({
+      return res.status(401).json({
         status: "failed",
         message: "User does not exist",
       });
@@ -93,12 +90,10 @@ const forgetpassword = async (req, res) => {
     const oneTimeToken = generate_oneTimeToken();
     const verifyuserToken = await updateToken(req.body.email, oneTimeToken);
     sendVerificationEmail(req.body.email, oneTimeToken);
-    return res
-      .json({
+    return res.status(200).json({
         status: "success",
         message: "successfully sent reset password",
       })
-      .status(201);
   } catch (error) {
     console.log(error.message);
   }
@@ -117,16 +112,16 @@ const resetPassword = async (req, res) => {
     const encryptedPassword = await hashPassword(password);
     if (user[0].onetime_token === verification) {
       const Verified = updatePassword(email, encryptedPassword);
-      return res.json({
+      return res.status(200).json({
         status: "success",
         message: "updated Verified user",
         data: Verified,
       });
     }
 
-    res.json({
+    res.status(401).json({
       status: "failed",
-      message: "not Verified user",
+      message: "Not Verified user",
     });
   } catch (error) {
     console.log(error.message);
@@ -154,46 +149,28 @@ const createNewAdmin = async (req, res, next) => {
   }
 };
 
-// const adminLogin = async (req, res, next) => {
-
-//   try {
-//       const { body:{email, password} } = req
-//       console.log(email, password);
-
-//       const validated = await validateAdminPassword(email, password)
-
-//       if (!validated) {
-//           res.status(401).json({
-//               status: 'fail',
-//               message: 'Invalid credentials',
-//               data: 'Error logging in user'
-//           })
-//       } else {
-//           res.status(201).json({
-//               status: 'success',
-//               message: 'User logged in successfully',
-//               data: validated
-//           })
-//       }
-//   } catch (error) {
-//       return next(error)
-//   }
-// }
 const adminLog = async (req, res, next) => {
   try {
     const {
-      body
-    } = req;
-    await logAdmin(body);
-    const token = await generateAdminToken(body)
+      password,
+      email
+    } = req.body;
+    const token = await validateAdminPassword(email, password);
 
-    res.status(200).json({
-      status: "Success",
-      message: "Admin login Successful",
-      token: token
-    });
+    if (!token) {
+      res.status(401).json({
+        status: "fail",
+        message: "Invalid credentials",
+      });
+    } else {
+      res.status(200).json({
+        status: "success",
+        message: "Authenticated ",
+        data: token,
+      });
+    }
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 
@@ -324,9 +301,10 @@ const getAdminDetails = async (req, res) => {
     } = req;
     const admin = await getAdminProfile(body);
     const {
+      id,
       password,
       ...getAdmin
-    } = admin
+    } = admin[0]
 
     return res.status(200).json({
       status: 'Success',

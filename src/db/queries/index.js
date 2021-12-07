@@ -35,18 +35,16 @@ const queries = {
     RETURNING *
       `,
   adminLogin: `
-    INSERT INTO admin (
-        email,
-        password
-    ) VALUES ($1,$2)
-    RETURNING *
-     `,
+  SELECT *
+   FROM adminregister
+   WHERE email=$1 
+   `,
   userApplication: `
      INSERT INTO userApplication (
          fname,
          lname,
          email,
-         cpga,
+         cgpa,
          address,
          course,
          university,
