@@ -2,23 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const validateAdmin = async (req, res, next) => {
-  try {
-    const {
-      body: { email, password },
-    } = req;
-    if (email !== "admin@enyata.com" || password !== "admin") {
-      return res.status(400).json({
-        status: "Failed",
-        message: "You are not authorised to proceed",
-      });
-    }
-    return next();
-  } catch (error) {
-    return next(error);
-  }
-};
-
 const generateAdminToken = async (user) => {
   const token = jwt.sign(
     {
@@ -54,7 +37,7 @@ const comparePassword = async (password, userPassword) => {
 
 const generateToken = (user) => {
   const token = jwt.sign(user, process.env.TOKEN_KEY, {
-    expiresIn: "24h",
+    expiresIn: "1hr",
   });
   return token;
 };
@@ -70,14 +53,11 @@ const generateResetToken = (user) => {
   return token;
 };
 
-// const generateResetToken = () => Math.floor(100000 + Math.random() * 900000);
-
 module.exports = {
   hashPassword,
   comparePassword,
   generateToken,
   generateAdminToken,
   validateAdminToken,
-  validateAdmin,
   generateResetToken,
 };

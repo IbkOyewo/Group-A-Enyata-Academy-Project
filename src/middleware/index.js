@@ -35,7 +35,7 @@ const checkUser = (type) => async (req, res, next) => {
 // verify token
 const verifyToken = (type) => async (req, res, next) => {
   try {
-    type === 'admin'
+    type === 'access'
     const token = req.headers["x-access-token"] || req.queries.token;
     if (!token) {
       return res.status(403).json({
