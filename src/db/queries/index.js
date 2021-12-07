@@ -40,7 +40,7 @@ const queries = {
    WHERE email=$1 
    `,
   userApplication: `
-     INSERT INTO userApplication (
+     INSERT INTO userapplication (
          fname,
          lname,
          email,
@@ -54,6 +54,18 @@ const queries = {
      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *
       `,
+  batchEntries: `
+    SELECT
+         fname,
+         lname,
+         email,
+         cpga,
+         address,
+         university,
+         dob
+         FROM userapplication
+         ORDER BY fname
+  `,
   setNewApplication: `
       INSERT INTO application_details (
         batchId,
@@ -87,6 +99,28 @@ const queries = {
     INNER JOIN test_results
     ON userapplication.id = test_results.id
     `,
+  total_batchId: `
+  SELECT COUNT(batchId) FROM application_details
+  WHERE batchId=$1
+  `,
+  total_application: `
+  SELECT COUNT(*) FROM userapplication;
+  `,
+  current_application: `
+  SELECT * FROM application_details
+  `,
+  submit_assessment: `
+      INSERT INTO assessmentHistory (
+         batch,
+        dateComposed,
+        NoofQuestions,
+        timeAllocated,
+        status
+    ) VALUES ($1, $2, $3, $4, $5)
+    `,
+  assessmentHistory: `
+  SELECT * FROM assessmentHistory
+  `,
 };
 
 module.exports = queries;
