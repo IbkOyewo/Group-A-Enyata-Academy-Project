@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const upload = require('../multer/index')
+// const upload = require('../controller/upload')
+// const multer = require('../middleware/upload')
 const { validateUser, checkUser, verifyToken } = require("../middleware");
 const {
   createNewUser,
@@ -21,6 +24,7 @@ const {
   getEntries,
   submittedAssessment,
   getassessmentHistory,
+  returnSingleUser,
 } = require("../controller/index");
 const {
   createUserSchema,
@@ -32,13 +36,15 @@ const {
   registerAdminSchema,
 } = require("../validator");
 const { validateAdmin } = require("../utils");
+const { cloudinaryUpload } = require("../middleware/fileUpload");
 
 //ADMIN ENDPOINTS
 router.post("/api/admin/register", validateUser(registerAdminSchema), createNewAdmin);
 router.post("/api/admin/login", validateUser(loginAdminSchema), adminLog);
-router.post("/api/admin/application", validateUser(setapplicationSchema), verifyToken('access'), createNewApplication)
+router.post("/api/admin/application", validateUser(setapplicationSchema), cloudinaryUpload, verifyToken('access'), createNewApplication)
 router.post("/api/admin/compose-assessment", validateUser(composeAssessmentSchema), verifyToken('access'), composeAssessment)
 router.get("/api/user/profile", verifyToken('access'), getUserDetails)
+router.get("/api/dashboard/:userid",verifyToken('access'), returnSingleUser);
 router.get("/api/user/results", verifyToken('access'), getUserResults)
 router.get("/api/admin/profile", verifyToken('access'), getAdminDetails)
 router.post(
@@ -81,8 +87,10 @@ router.post("/api/login", validateUser(loginUserSchema, "body"), loginUser);
 router.post("/forgetpassword", forgetpassword);
 router.post("/user/forgetpassword" ,verifyToken('access'), forgetpassword);
 router.put("/user/reset-password",verifyToken('access'), resetPassword);
-router.post("/api/user/application", validateUser(userapplicationSchema),verifyToken('access'),register);
+//router.post("/api/user/application", validateUser(userapplicationSchema),upload.uploadUser.single('cv'),cloudinaryUpload, verifyToken('access'),register);
+router.post("/api/user/application", validateUser(userapplicationSchema), register);
 router.get("/api/user/take-assessment",verifyToken('access'), takeAssessment)
+//router.post("/upload",verifyToken('access'), multer, upload)
 
 
 module.exports = router;
