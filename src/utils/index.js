@@ -10,9 +10,10 @@ const generateAdminToken = async (user) => {
     },
     process.env.TOKEN_KEY,
     {
-      expiresIn: "1h",
+      expiresIn: "24h",
     }
   );
+  console.log("Admin",user);
   return token;
 };
 
@@ -36,9 +37,16 @@ const comparePassword = async (password, userPassword) => {
 };
 
 const generateToken = (user) => {
-  const token = jwt.sign(user, process.env.TOKEN_KEY, {
-    expiresIn: "1hr",
+  const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+     process.env.TOKEN_KEY, 
+     {
+    expiresIn: "24hr",
   });
+  console.log(user);
   return token;
 };
 

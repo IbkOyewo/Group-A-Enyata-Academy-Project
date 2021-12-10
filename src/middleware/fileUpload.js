@@ -7,9 +7,28 @@ const {
 
 const cloudinaryUpload = async (req, res, next) => {
   try {
-    const data = await cloudinaryConfig(req);
-    req.cv = data[0].secure_url;
-    req.image = data[1].secure_url;
+    // console.log("helllo");
+    // const file = req.file
+    // console.log(file);
+  //  let cvPath = req.files.cv[0].path;
+  //  let imagePath = req.files.image[0].path;
+  // const data = await cloudinaryConfig(cvPath, imagePath);
+  //   console.log(data);
+    //req.files.cv = data[0].secure_url;
+  //   req.files.image = data[1].secure_url;
+   let cvPath = req.body.cv;
+   let imagePath = req.body.image;
+    const data = await cloudinaryConfig(cvPath, imagePath);
+    console.log(data);
+    
+    req.body.image = data[1].secure_url;
+    //console.log(req.body);
+    req.body.cv = data[0].secure_url;
+    console.log(req.body);
+  
+    // console.log(req.files);
+    // console.log(req.body);
+    next();
   } catch (error) {
     console.log(error);
   }

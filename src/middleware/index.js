@@ -89,40 +89,7 @@ const validateUser = (data, type) => async (req, res, next) => {
     next(error);
   }
 };
-// const validateAdmin = (type) => async(req,res,next) =>{
-//   try {
-//       //let message;
-//       const {body: {email}} =req;
-//       const user =await getAdmin(email)
-//       //console.log(email, type, user);
-//       if(type === 'login'){
-//           if(!user){
-//               return res.status(401).json({
-//                   status:"Fail",
-//                   message: "Invalid Credentials",
-//                   data:[]
-//               })
-//           }else{
-//               req.user =user
-//               return next()
-//           }
-//       }
-//       if(!user){
-//           return res.status(401).json({
-//               status:"Fail",
-//               message: "User already exists",
-//               data:[]
-//       })
-//       }else{
-//           req.user = user
-//           return next()
-//       }
 
-//   } catch (error) {
-//       console.log(error)
-//       return next(error)
-//   }
-// }
 module.exports = {
   verifyToken,
   validateUser,

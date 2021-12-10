@@ -10,6 +10,8 @@ const {
   getAdminProfile,
   submitAssessment,
   assessmentHistory,
+  getSingleUserById,
+  insertFile,
 } = require("../services");
 const dotenv = require("dotenv");
 const {
@@ -168,11 +170,15 @@ const register = async (req, res, next) => {
   try {
     const { body } = req;
     const { email } = req.body;
+    // req.body.cv = req.files.cv
+    // req.body.image = req.files.image
+    console.log(req.body);
 
-    await cloudinaryUpload(body);
-    await userForm(body);
+    //await insertFile(req.files)
+    await userForm(req.body);
     await sendApplicationEmail(body);
     return res.status(201).json({
+      status: "success",
       message: `Application successfully received.`,
     });
   } catch (error) {
@@ -191,9 +197,9 @@ const createNewApplication = async (req, res) => {
       message: "Application advert sent successfully",
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
     });
   }
 };
@@ -202,15 +208,15 @@ const composeAssessment = async (req, res) => {
   try {
     const { body } = req;
     await cloudinaryAssessmentUpload(body);
-    await adminComposeAssessment(req.body);
+    await adminComposeAssessment(body);
     return res.status(201).json({
       status: "Success",
       message: "Assessment Composed successfully",
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
     });
   }
 };
@@ -225,10 +231,9 @@ const takeAssessment = async (req, res) => {
       data: assessment,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
     });
   }
 };
@@ -243,9 +248,26 @@ const getUserDetails = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
+    });
+  }
+};
+
+const returnSingleUser = async (req, res) => {
+  try {
+    const currentUser = await getSingleUserById(req.params.userid);
+  
+    res.status(200).json({
+      status: 'Success',
+      message: 'User fetched successfully',
+      data: currentUser,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "Fail",
+      message: "Bad Request",
     });
   }
 };
@@ -257,13 +279,13 @@ const getUserResults = async (req, res) => {
 
     return res.status(200).json({
       status: "Success",
-      message: "Reults Gotten successfully",
+      message: "Results Gotten successfully",
       data: user,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
     });
   }
 };
@@ -284,10 +306,9 @@ const getAdminDetails = async (req, res) => {
       data: getAdmin,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Fail",
-      message: "Something went wrong",
+      message: "Bad Request",
     });
   }
 };
@@ -432,6 +453,7 @@ module.exports = {
   composeAssessment,
   takeAssessment,
   getUserDetails,
+  returnSingleUser,
   getUserResults,
   getAdminDetails,
   currentApplication,

@@ -59,7 +59,7 @@ const queries = {
          fname,
          lname,
          email,
-         cpga,
+         cgpa,
          address,
          university,
          dob
@@ -91,11 +91,14 @@ const queries = {
   getUserProfile: `
     SELECT * FROM userApplication
      `,
+  getUserById: `
+  SELECT * FROM userApplication where id=$1
+  `,
   getAdminProfile: `
     SELECT * FROM adminregister
      `,
   getResults: `
-    SELECT userapplication.id, fname, lname, email,dob,address, university, cpga,test_results.id, testscores FROM userapplication
+    SELECT userapplication.id, fname, lname, email,dob,address, university, cgpa,test_results.id, testscores FROM userapplication
     INNER JOIN test_results
     ON userapplication.id = test_results.id
     `,
@@ -108,6 +111,11 @@ const queries = {
   `,
   current_application: `
   SELECT * FROM application_details
+  `,
+  insertFiles:`
+  INSERT INTO userapplication(
+    cv,image
+  ) VALUES ($1, $2)
   `,
   submit_assessment: `
       INSERT INTO assessmentHistory (

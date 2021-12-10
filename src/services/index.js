@@ -78,6 +78,10 @@ const createAdmin = async (body) => {
 //const getAdmin = (email, password) => db.any(queries.adminLogin, [email, password])
 const logAdmin = (email) => db.any(queries.adminLogin, email);
 
+const insertFile = async(data) => {
+  const payload = [data.cv, data.image]
+  return db.any(queries.insertFiles,payload)
+}
 const userForm = async (data) => {
   const payload = [
     data.fname,
@@ -134,6 +138,8 @@ const getAssessment = () => db.any(queries.getAssessment);
 
 const getUserProfile = () => db.any(queries.getUserProfile);
 
+const getSingleUserById = async (id) => db.oneOrNone(queries.getUserById, [id]);
+
 const getAdminProfile = () => db.any(queries.getAdminProfile);
 
 const getResults = () => db.any(queries.getResults);
@@ -146,6 +152,7 @@ const current_application = () => db.any(queries.current_application);
 
 const batchEntries = () => db.any(queries.batchEntries);
 
+
 module.exports = {
   createUser,
   validatePassword,
@@ -153,6 +160,7 @@ module.exports = {
   updateToken,
   updatePassword,
   createAdmin,
+  insertFile,
   logAdmin,
   validateAdminPassword,
   userForm,
@@ -160,6 +168,7 @@ module.exports = {
   adminComposeAssessment,
   getAssessment,
   getUserProfile,
+  getSingleUserById,
   getAdminProfile,
   getResults,
   current_application,
