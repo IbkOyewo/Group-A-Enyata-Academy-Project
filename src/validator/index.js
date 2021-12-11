@@ -25,7 +25,7 @@ const registerAdminSchema = {
     password: Joi.string().required(),
     phoneNumber: Joi.string().required,
     country: Joi.string().required,
-    address: Joi.string().required,
+    address: Joi.string().required
   }),
 };
 

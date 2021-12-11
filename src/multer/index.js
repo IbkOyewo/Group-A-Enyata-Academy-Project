@@ -1,93 +1,75 @@
-let multer = require('multer');
+const path = require('path'); // for getting file extension
+const multer = require('multer'); // for uploading files
 
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => { // setting destination of uploading files        
+      if (file.fieldname === "cv") { // if uploading resume
+        cb(null, path.join(__dirname, '../../uploads/'));
+      } else { // else uploading image
+        cb(null, path.join(__dirname, '../../uploads/'));
+      }
+    },
+    filename: (req, file, cb) => { // naming file
+      cb(null, file.fieldname);
+    }
+});
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document","image/jpeg", "image/jpg", "image/png"];
-  if (!allowedTypes.includes(file.mimetype)) {
-    const error = new Error("Incorrect file type");
-    error.code = "INCORRECT_FILETYPE";
-    return cb(error, false)
-  }
-  cb(null, true);
+if (file.fieldname === "cv") { // if uploading resume
+    if (
+    file.mimetype === 'application/pdf' ||
+    file.mimetype === 'application/msword' ||
+    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) { // check file type to be pdf, doc, or docx
+    cb(null, true);
+    } else {
+    cb(null, false); // else fails
+    }
+} else { // else uploading image
+    if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+    ) { // check file type to be png, jpeg, or jpg
+    cb(null, true);
+    } else {
+    cb(null, false); // else fails
+    }
 }
+};
 
-// const fileFilters = (req, file, cb) => {
-//   const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document","image/jpeg", "image/jpg", "image/png"];
-//   if (!allowedTypes.includes(file.mimetype)) {
-//     const error = new Error("Incorrect file type");
-//     error.code = "INCORRECT_FILETYPE";
-//     return cb(error, false)
-//   }
-//   cb(null, true);
-// }
+const uploadUser =
+	multer(
+	  { 
+		storage: fileStorage, 
+		limits:
+		  { 
+			fileSize:'2mb' 
+		  }, 
+		fileFilter: fileFilter 
+	  }
+	).fields(
+	  [
+		{ 
+		  name: 'cv', 
+		  maxCount: 1 
+		}, 
+		{ 
+		  name: 'image', 
+		  maxCount: 1 
+		}
+	  ]
+	)
 
-var storageuser = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null,'images/users')
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  }
-})
-
-// var storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'public/adminfiles')
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   }
-// })
-
-// var storageprofile = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'public/userpics')
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   }
-// })
-
-// var storageprofileAd = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'public/adminpics')
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   }
-// })
-
-var uploadUser = multer({
-  storage: storageuser,
-  limits: {
-    fileSize: 1024 * 1024 * 5
-  },
-  fileFilter: fileFilter
-}
-);
-
-// var uploadImage = multer({
-//   storage: storageuser,
-//   limits: {
-//     fileSize: 1024 * 1024 * 5
-//   },
-//   fileFilter: fileFilters
-// });
-
-// var uploadProfile = multer({
-//   storage: storageprofile,
-//   limits: {
-//     fileSize: 1024 * 1024 * 5
-//   },
-//   fileFilter: fileFilters
-// });
-
-// var uploadProfileAd = multer({
-//   storage: storageprofileAd,
-//   limits: {
-//     fileSize: 1024 * 1024 * 5
-//   },
-//   fileFilter: fileFilters
-// });
-
-module.exports = {uploadUser}
+  const uploadApplicationFile =
+	multer(
+	  { 
+		storage: fileStorage, 
+		limits:
+		  { 
+			fileSize:'2mb' 
+		  }, 
+		fileFilter: fileFilter 
+	  }
+	).single("image")
+module.exports = {uploadUser, uploadApplicationFile}

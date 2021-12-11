@@ -1,11 +1,12 @@
 const { any } = require("bluebird");
 const db = require("../db");
 const queries = require("../db/queries");
-const { hashPassword, comparePassword, generateToken } = require("../utils");
+const { hashPassword, comparePassword, generateToken, generateAdminToken } = require("../utils");
 
 // getting user
 const getUser = (email) => db.any(queries.login, email);
 
+const getUserFromApplication = (email) => db.any(queries.getUserFromApplication, email)
 const createUser = async (body) => {
   const { firstName, lastName, email, phoneNumber, password } = body;
   const encryptedPassword = await hashPassword(password);
@@ -29,6 +30,9 @@ const validatePassword = async (email, password) => {
     if (isValid) {
       const token = generateToken({
         id: userdata.id,
+        email: userdata.email,
+        fname: userdata.firstname,
+        lname: userdata.lastname
       });
       return token;
     }
@@ -43,9 +47,10 @@ const validateAdminPassword = async (email, password) => {
     const isValid = await comparePassword(password, admin[0].password);
     const data = admin[0];
     if (isValid) {
-      const token = generateToken({
+      const token = generateAdminToken({
         id: data.id,
-        email: data.email
+        email: data.email,
+        name:data.name
       });
       return token;
     }
@@ -62,7 +67,7 @@ const updatePassword = (email, newPassword) => {
 };
 
 const createAdmin = async (body) => {
-  const { name, email, password, phoneNumber, country, address } = body;
+  const { name, email, password, phoneNumber, country, address, image } = body;
   const encryptedPassword = await hashPassword(password);
   const payload = [
     name,
@@ -70,7 +75,7 @@ const createAdmin = async (body) => {
     encryptedPassword,
     phoneNumber,
     country,
-    address,
+    address
   ];
   return db.one(queries.adminRegister, payload);
 };
@@ -101,7 +106,7 @@ const userForm = async (data) => {
 const adminCreateApplication = async (data) => {
   const payload = [
     data.batchId,
-    data.imageUrl,
+    data.image,
     data.applicationLink,
     data.closureDate,
     data.instructions,
@@ -140,6 +145,8 @@ const getUserProfile = () => db.any(queries.getUserProfile);
 
 const getSingleUserById = async (id) => db.oneOrNone(queries.getUserById, [id]);
 
+const getSingleAdminById = async (id) => db.oneOrNone(queries.getAdminById, [id]);
+
 const getAdminProfile = () => db.any(queries.getAdminProfile);
 
 const getResults = () => db.any(queries.getResults);
@@ -168,7 +175,9 @@ module.exports = {
   adminComposeAssessment,
   getAssessment,
   getUserProfile,
+  getUserFromApplication,
   getSingleUserById,
+  getSingleAdminById,
   getAdminProfile,
   getResults,
   current_application,
