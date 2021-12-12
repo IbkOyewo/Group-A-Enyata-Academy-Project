@@ -1,21 +1,27 @@
-const validateAdmin = async (req, res, next) => {
+const { getUser, getUserFromApplication } = require("../services");
+
+const checkIfUserExists = async (req, res,next) => {
     try {
-        const {
-            body: {
-                email,
-                password
-            }
-        } = req;
-        if (password === 'admin' && email === 'admin@enyata.com') {
-            return next()
-        } else {
-            return res.status(400).json({
-                status: "Forbidden",
-                message: 'You are not authorised to proceed',
-            })
+      const {
+        email
+      } = req.body;
+      const [user] = await getUser(email);
+        if (!user) {
+           res.status(400).json({
+            status: "failed",
+            message: "This user is not registered",
+          });
         }
+        const [appliedUser] = await getUserFromApplication(email);
+        if (appliedUser) {
+             res.status(400).json({
+              status: "failed",
+              message: "This user has already sent an application",
+            });
+          }
+     next();
     } catch (error) {
-        return next(error)
+      console.log(error.message);
     }
-}
-module.exports = validateAdmin
+  };
+module.exports = checkIfUserExists

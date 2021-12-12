@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 const multer = require('multer')
-var upload = multer();
+//var upload = multer();
 const port = process.env.PORT;
 //app.use(fileupload({useTempFiles: true}))
 app.use(express.json());

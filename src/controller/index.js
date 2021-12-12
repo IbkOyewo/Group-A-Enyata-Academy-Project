@@ -12,6 +12,7 @@ const {
   assessmentHistory,
   getSingleUserById,
   insertFile,
+  getSingleAdminById,
 } = require("../services");
 const dotenv = require("dotenv");
 const {
@@ -128,7 +129,7 @@ const resetPassword = async (req, res) => {
 const createNewAdmin = async (req, res, next) => {
   try {
     const { body } = req;
-    const newAdmin = await createAdmin(body);
+    const newAdmin = await createAdmin(req.body);
     const { password, ...user } = newAdmin;
 
     res.status(201).json({
@@ -170,11 +171,7 @@ const register = async (req, res, next) => {
   try {
     const { body } = req;
     const { email } = req.body;
-    // req.body.cv = req.files.cv
-    // req.body.image = req.files.image
-    console.log(req.body);
 
-    //await insertFile(req.files)
     await userForm(req.body);
     await sendApplicationEmail(body);
     return res.status(201).json({
@@ -189,7 +186,7 @@ const register = async (req, res, next) => {
 const createNewApplication = async (req, res) => {
   try {
     const { body } = req;
-    await cloudinaryApplicationUpload(body);
+    //await cloudinaryApplicationUpload(body);
     await adminCreateApplication(req.body);
 
     return res.status(200).json({
@@ -207,7 +204,7 @@ const createNewApplication = async (req, res) => {
 const composeAssessment = async (req, res) => {
   try {
     const { body } = req;
-    await cloudinaryAssessmentUpload(body);
+    //await cloudinaryAssessmentUpload(body);
     await adminComposeAssessment(body);
     return res.status(201).json({
       status: "Success",
@@ -271,6 +268,24 @@ const returnSingleUser = async (req, res) => {
     });
   }
 };
+
+const returnSingleAdmin = async (req, res) => {
+  try {
+    const currentAdmin = await getSingleAdminById(req.params.adminid);
+  
+    res.status(200).json({
+      status: 'Success',
+      message: 'Admin fetched successfully',
+      data: currentAdmin,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "Fail",
+      message: "Bad Request",
+    });
+  }
+};
+
 
 const getUserResults = async (req, res) => {
   try {
@@ -454,6 +469,7 @@ module.exports = {
   takeAssessment,
   getUserDetails,
   returnSingleUser,
+  returnSingleAdmin,
   getUserResults,
   getAdminDetails,
   currentApplication,

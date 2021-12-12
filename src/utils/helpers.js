@@ -16,23 +16,23 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const cloudinaryConfig = async (cvPath, imagePath) => {
-  try {
-   // console.log("c",cvPath, imagePath);
-    // const {
-    //   cv,
-    //   image
-    // } = request
-//console.log(request);
-    const cvData = await cloudinary.uploader.upload(cvPath)
-    const imageData = await cloudinary.uploader.upload(imagePath)
-    const data = [cvData, imageData]
-    //console.log(data);
-    return data;
-  } catch (error) {
-    return error;
-  }
-}
+// const cloudinaryConfig = async (cvPath, imagePath) => {
+//   try {
+//    // console.log("c",cvPath, imagePath);
+//     // const {
+//     //   cv,
+//     //   image
+//     // } = request
+// //console.log(request);
+//     const cvData = await cloudinary.uploader.upload(cvPath)
+//     const imageData = await cloudinary.uploader.upload(imagePath)
+//     const data = [cvData, imageData]
+//     //console.log(data);
+//     return data;
+//   } catch (error) {
+//     return error;
+//   }
+// }
 
 // const cloudinaryApplicationConfig = async (request, response) => {
 //   try {
@@ -57,8 +57,8 @@ const cloudinaryConfig = async (cvPath, imagePath) => {
 //     return error;
 //   }
 // }
-module.exports = {
-  cloudinaryConfig,
-  // cloudinaryApplicationConfig,
-  // cloudinaryAssessmentConfig
-};
+// module.exports = {
+//   cloudinaryConfig,
+//   // cloudinaryApplicationConfig,
+//   // cloudinaryAssessmentConfig
+// };

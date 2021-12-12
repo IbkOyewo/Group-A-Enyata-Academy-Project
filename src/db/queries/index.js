@@ -54,6 +54,11 @@ const queries = {
      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *
       `,
+  getUserFromApplication: `
+  SELECT *
+    FROM userapplication
+    WHERE email=$1 
+    `,
   batchEntries: `
     SELECT
          fname,
@@ -69,7 +74,7 @@ const queries = {
   setNewApplication: `
       INSERT INTO application_details (
         batchId,
-        imageUrl,
+        image,
         applicationLink,
         closureDate,
         instructions
@@ -93,6 +98,9 @@ const queries = {
      `,
   getUserById: `
   SELECT * FROM userApplication where id=$1
+  `,
+  getAdminById: `
+  SELECT * FROM adminregister where id=$1
   `,
   getAdminProfile: `
     SELECT * FROM adminregister
