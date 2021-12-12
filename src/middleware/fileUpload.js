@@ -32,14 +32,18 @@ const cloudinaryUpload = async (req,res, next) => {
   }
 }
 
-// const cloudinaryApplicationUpload = async (req, res, next) => {
-//   try {
-//     const data = await cloudinaryApplicationConfig(req);
-//     req.imageUrl = data.secure_url;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+const cloudinaryAdminUpload = async (req, res, next) => {
+  try {
+    //console.log(req.file);
+    let imagePath = req.file.path
+    const imageData = await cloudinary.uploader.upload(imagePath)
+    req.body.image = imageData.secure_url;
+    next()
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 const cloudinaryAssessmentUpload = async (req, res, next) => {
   try {
@@ -51,5 +55,6 @@ const cloudinaryAssessmentUpload = async (req, res, next) => {
 };
 module.exports = {
   cloudinaryUpload,
+  cloudinaryAdminUpload,
   cloudinaryAssessmentUpload
 }

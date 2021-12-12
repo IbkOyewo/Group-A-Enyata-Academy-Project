@@ -13,6 +13,8 @@ const {
   getSingleUserById,
   insertFile,
   getSingleAdminById,
+  adminImage,
+  getUserProfileById,
 } = require("../services");
 const dotenv = require("dotenv");
 const {
@@ -183,6 +185,27 @@ const register = async (req, res, next) => {
   }
 };
 
+const uploadImage = async (req, res, next) => {
+  try {
+    const file = req.file
+    //console.log(file);
+    if (!file) {
+      const error = new Error('Please upload a file')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+    await adminImage(req.body)
+     res.status(201).json({
+      status: "success",
+      message: `File uploaded.`,
+    });
+    
+  }catch(err){
+    console.log(err);
+  }
+};
+
+
 const createNewApplication = async (req, res) => {
   try {
     const { body } = req;
@@ -196,7 +219,7 @@ const createNewApplication = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to send application advert",
     });
   }
 };
@@ -213,7 +236,7 @@ const composeAssessment = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to compose Assessment",
     });
   }
 };
@@ -230,15 +253,33 @@ const takeAssessment = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to fetch Assessment",
+    });
+  }
+};
+
+const getUserDetailsById = async (req, res) => {
+  try {
+    //const { body } = req;
+    const user = await getUserProfileById(req.params.userid);
+    return res.status(200).json({
+      status: "Success",
+      message: "User Gotten successfully",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "Fail",
+      message: "User not found ",
     });
   }
 };
 
 const getUserDetails = async (req, res) => {
   try {
-    const { body } = req;
-    const user = await getUserProfile(body);
+    //const { body } = req;
+    const user = await getUserProfile();
+    console.log(user);
     return res.status(200).json({
       status: "Success",
       message: "Users Gotten successfully",
@@ -247,7 +288,7 @@ const getUserDetails = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "User not gotten ",
     });
   }
 };
@@ -264,7 +305,7 @@ const returnSingleUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to fetch user",
     });
   }
 };
@@ -281,7 +322,7 @@ const returnSingleAdmin = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "This Admin does not exist",
     });
   }
 };
@@ -300,7 +341,7 @@ const getUserResults = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to get results",
     });
   }
 };
@@ -323,7 +364,7 @@ const getAdminDetails = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Fail",
-      message: "Bad Request",
+      message: "Unable to fetch Admin",
     });
   }
 };
@@ -356,7 +397,9 @@ const totalBatch = async (req, res) => {
 
 const total_applications = async (req, res) => {
   try {
-    const data = await total_application(req.body.email);
+    console.log(req);
+    const data = await total_application(req.body);
+    console.log(data);
     if (data.length === 0) {
       res.json({
         status: "Success",
@@ -472,6 +515,8 @@ module.exports = {
   returnSingleAdmin,
   getUserResults,
   getAdminDetails,
+  getUserDetailsById,
+  uploadImage,
   currentApplication,
   total_applications,
   submittedAssessment,
