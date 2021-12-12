@@ -124,12 +124,13 @@ const adminCreateApplication = async (data) => {
 
 const adminComposeAssessment = async (data) => {
   const payload = [
-    data.imageUrl,
+    data.image,
     data.questions,
     data.optionA,
     data.optionB,
     data.optionC,
     data.optionD,
+    data.answer
   ];
   return db.none(queries.composeAssessment, payload);
 };

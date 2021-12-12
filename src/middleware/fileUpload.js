@@ -34,7 +34,6 @@ const cloudinaryUpload = async (req,res, next) => {
 
 const cloudinaryAdminUpload = async (req, res, next) => {
   try {
-    //console.log(req.file);
     let imagePath = req.file.path
     const imageData = await cloudinary.uploader.upload(imagePath)
     req.body.image = imageData.secure_url;
