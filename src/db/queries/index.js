@@ -23,6 +23,12 @@ const queries = {
     UPDATE users SET password=$1, onetime_token=$2
     WHERE email=$3 RETURNING *
       `,
+  adminImages: `
+  INSERT INTO admin_images (
+    image
+) VALUES ($1)
+RETURNING *
+  `,
   adminRegister: `
       INSERT INTO adminregister (
         name,
@@ -30,8 +36,9 @@ const queries = {
         password,
         phoneNumber,
         country,
-        address
-    ) VALUES ($1,$2,$3,$4,$5,$6)
+        address,
+        image
+    ) VALUES ($1,$2,$3,$4,$5,$6,$7)
     RETURNING *
       `,
   adminLogin: `
@@ -93,14 +100,25 @@ const queries = {
   getAssessment: `
     SELECT * FROM assessments 
     `,
-  getUserProfile: `
-    SELECT * FROM userApplication
+    getUserProfile: `
+    SELECT userapplication.id, fname,lname,userapplication.email, cgpa,address,course, university,dob, users.id FROM userapplication
+    INNER JOIN users
+    ON userapplication.email= users.email
+       `,
+  getUserProfileById: `
+  SELECT userapplication.id, fname, lname, userapplication.email, userapplication.created_at, cv, image, users.id FROM userapplication
+  INNER JOIN users
+  ON userapplication.email= users.email
+  WHERE userapplication.id=$1
      `,
   getUserById: `
   SELECT * FROM userApplication where id=$1
   `,
   getAdminById: `
-  SELECT * FROM adminregister where id=$1
+  SELECT adminregister.id, name, email,password,phoneNumber,country,address, admin_images.image FROM adminregister
+  INNER JOIN admin_images
+  ON adminregister.id= admin_images.id
+  WHERE adminregister.id=$1
   `,
   getAdminProfile: `
     SELECT * FROM adminregister
@@ -114,7 +132,7 @@ const queries = {
   SELECT COUNT(batchId) FROM application_details
   WHERE batchId=$1
   `,
-  total_application: `
+  totalApplication: `
   SELECT COUNT(*) FROM userapplication;
   `,
   current_application: `

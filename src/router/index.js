@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const upload = require('../multer/index')
-//const upload = require('../controller/upload')
-// const multer = require('../middleware/upload')
 const { validateUser, checkUser, verifyToken } = require("../middleware");
 const {
   createNewUser,
@@ -26,6 +24,8 @@ const {
   getassessmentHistory,
   returnSingleUser,
   returnSingleAdmin,
+  uploadImage,
+  getUserDetailsById,
 } = require("../controller/index");
 const {
   createUserSchema,
@@ -37,7 +37,7 @@ const {
   registerAdminSchema,
 } = require("../validator");
 const { validateAdmin } = require("../utils");
-const { cloudinaryUpload } = require("../middleware/fileUpload");
+const { cloudinaryUpload, cloudinaryAdminUpload } = require("../middleware/fileUpload");
 const uploadFiles = require("../controller/upload");
 const checkIfUserExists = require("../validation");
 
@@ -46,22 +46,28 @@ router.post("/api/admin/register", validateUser(registerAdminSchema), createNewA
 router.post("/api/admin/login", validateUser(loginAdminSchema), adminLog);
 router.post("/api/admin/application", upload.uploadApplicationFile, verifyToken('access'), createNewApplication)
 router.post("/api/admin/compose-assessment", validateUser(composeAssessmentSchema), verifyToken('access'), composeAssessment)
-router.get("/api/user/profile", verifyToken('access'), getUserDetails)
-router.get("/api/dashboard/:userid",verifyToken('access'), returnSingleUser);
-//router.get("/api/admin/:adminid",verifyToken('access'), returnSingleAdmin);
+router.get("/api/user/profile/:userid", verifyToken('access'), getUserDetailsById)
+router.get("/api/user/details", verifyToken('access'), getUserDetails)
+router.get("/api/user-dashboard/:userid",verifyToken('access'), returnSingleUser);
+router.get("/api/admin-dashboard/:adminid",verifyToken('access'), returnSingleAdmin);
 router.get("/api/user/results", verifyToken('access'), getUserResults)
 router.get("/api/admin/profile", verifyToken('access'), getAdminDetails)
 router.post(
   "/api/admin/register",
-  validateUser(registerAdminSchema),
+  upload.uploadApplicationFile,
   createNewAdmin
 );
-
-router.get(
-  "/api/admin/total_applications",
+router.post(
+  "/api/admin/upload",
+  upload.uploadApplicationFile,
+  cloudinaryAdminUpload,
+  uploadImage
+);
+router.get("/api/admin/total_applications",
   verifyToken("access"),
   total_applications
-);
+  );
+
 router.get("/api/admin/total_batch", verifyToken("access"), totalBatch);
 
 router.get(

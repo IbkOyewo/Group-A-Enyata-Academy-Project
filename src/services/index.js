@@ -75,7 +75,8 @@ const createAdmin = async (body) => {
     encryptedPassword,
     phoneNumber,
     country,
-    address
+    address,
+    image
   ];
   return db.one(queries.adminRegister, payload);
 };
@@ -101,6 +102,13 @@ const userForm = async (data) => {
     data.image,
   ];
   return db.any(queries.userApplication, payload);
+};
+
+const adminImage = async (data) => {
+  const payload = [
+    data.image
+  ];
+  return db.any(queries.adminImages, payload);
 };
 
 const adminCreateApplication = async (data) => {
@@ -141,6 +149,8 @@ const assessmentHistory = () => db.any(queries.assessmentHistory);
 
 const getAssessment = () => db.any(queries.getAssessment);
 
+const getUserProfileById = (id) => db.oneOrNone(queries.getUserProfileById, [id]);
+
 const getUserProfile = () => db.any(queries.getUserProfile);
 
 const getSingleUserById = async (id) => db.oneOrNone(queries.getUserById, [id]);
@@ -153,7 +163,7 @@ const getResults = () => db.any(queries.getResults);
 
 const total_batchId = (batchId) => db.any(queries.total_batchId, [batchId]);
 
-const total_application = () => db.any(queries.total_application);
+const total_application = () => db.any(queries.totalApplication);
 
 const current_application = () => db.any(queries.current_application);
 
@@ -170,11 +180,14 @@ module.exports = {
   insertFile,
   logAdmin,
   validateAdminPassword,
+  adminImage,
+  
   userForm,
   adminCreateApplication,
   adminComposeAssessment,
   getAssessment,
   getUserProfile,
+  getUserProfileById,
   getUserFromApplication,
   getSingleUserById,
   getSingleAdminById,
