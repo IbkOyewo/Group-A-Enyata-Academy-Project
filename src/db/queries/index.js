@@ -57,8 +57,9 @@ RETURNING *
          university,
          dob,
          cv,
-         image
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+         image,
+         approval_status  
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'Pending')
      RETURNING *
       `,
   getUserFromApplication: `
@@ -156,6 +157,20 @@ RETURNING *
   assessmentHistory: `
   SELECT * FROM assessmentHistory
   `,
+  approveUser:`
+  UPDATE userapplication
+  SET 
+      approval_status= 'Approved'
+  WHERE
+      id= $1;
+  `,
+  declineUser:`
+  UPDATE userapplication
+  SET 
+      approval_status= 'Declined'
+  WHERE
+      id= $1;
+  `
 };
 
 module.exports = queries;

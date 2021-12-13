@@ -15,6 +15,8 @@ const {
   getSingleAdminById,
   adminImage,
   getUserProfileById,
+  approveUser,
+  declineUser,
 } = require("../services");
 const dotenv = require("dotenv");
 const {
@@ -211,7 +213,6 @@ const createNewApplication = async (req, res) => {
     const { body } = req;
     //await cloudinaryApplicationUpload(body);
     await adminCreateApplication(req.body);
-console.log(req.body);
     return res.status(201).json({
       status: "Success",
       message: "Application advert sent successfully",
@@ -398,9 +399,9 @@ const totalBatch = async (req, res) => {
 
 const total_applications = async (req, res) => {
   try {
-    console.log(req);
+    //console.log(req);
     const data = await total_application(req.body);
-    console.log(data);
+    //console.log(data);
     if (data.length === 0) {
       res.json({
         status: "Success",
@@ -500,6 +501,41 @@ const getassessmentHistory = async (req, res) => {
   }
 };
 
+const approveAUser = async (req, res) => {
+  try {
+    const currentUser = await getSingleUserById(req.params.userid);
+    const {approval_status,id} = currentUser
+    await approveUser(approval_status, id);
+    return res.status(200).json({
+      status: "Success",
+      message: "User approved successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Fail",
+      message: "Unable to approve user",
+    });
+  }
+};
+
+const declineAUser = async (req, res) => {
+  try {
+    const currentUser = await getSingleUserById(req.params.userid);
+    const {approval_status,id} = currentUser
+    await declineUser(approval_status, id);
+    return res.status(200).json({
+      status: "Success",
+      message: "User Declined successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Fail",
+      message: "Unable to decline user",
+    });
+  }
+};
 module.exports = {
   createNewUser,
   loginUser,
@@ -508,6 +544,7 @@ module.exports = {
   createNewAdmin,
   adminLog,
   register,
+  declineAUser,
   createNewApplication,
   composeAssessment,
   takeAssessment,
@@ -524,4 +561,5 @@ module.exports = {
   getassessmentHistory,
   totalBatch,
   getEntries,
+  approveAUser
 };

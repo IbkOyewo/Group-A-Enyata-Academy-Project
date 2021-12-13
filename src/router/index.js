@@ -26,6 +26,8 @@ const {
   returnSingleAdmin,
   uploadImage,
   getUserDetailsById,
+  approveAUser,
+  declineAUser,
 } = require("../controller/index");
 const {
   createUserSchema,
@@ -52,6 +54,8 @@ router.get("/api/user-dashboard/:userid",verifyToken('access'), returnSingleUser
 router.get("/api/admin-dashboard/:adminid",verifyToken('access'), returnSingleAdmin);
 router.get("/api/user/results", verifyToken('access'), getUserResults)
 router.get("/api/admin/profile", verifyToken('access'), getAdminDetails)
+router.put("/api/admin/approve/:userid", verifyToken('access'), approveAUser)
+router.put("/api/admin/decline/:userid", verifyToken('access'), declineAUser)
 router.post(
   "/api/admin/register",
   upload.uploadApplicationFile,
