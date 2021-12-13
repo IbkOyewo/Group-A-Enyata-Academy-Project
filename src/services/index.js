@@ -170,7 +170,13 @@ const current_application = () => db.any(queries.current_application);
 
 const batchEntries = () => db.any(queries.batchEntries);
 
+const approveUser = (id, approvalStatus) => {
+  db.any(queries.approveUser, [approvalStatus, id]);
+};
 
+const declineUser = (id, approvalStatus) => {
+  db.any(queries.declineUser, [approvalStatus, id]);
+};
 module.exports = {
   createUser,
   validatePassword,
@@ -182,7 +188,7 @@ module.exports = {
   logAdmin,
   validateAdminPassword,
   adminImage,
-  
+  approveUser,
   userForm,
   adminCreateApplication,
   adminComposeAssessment,
@@ -200,4 +206,5 @@ module.exports = {
   batchEntries,
   submitAssessment,
   assessmentHistory,
+  declineUser
 };
