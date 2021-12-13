@@ -211,12 +211,13 @@ const createNewApplication = async (req, res) => {
     const { body } = req;
     //await cloudinaryApplicationUpload(body);
     await adminCreateApplication(req.body);
-
-    return res.status(200).json({
+console.log(req.body);
+    return res.status(201).json({
       status: "Success",
       message: "Application advert sent successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Fail",
       message: "Unable to send application advert",
@@ -226,14 +227,14 @@ const createNewApplication = async (req, res) => {
 
 const composeAssessment = async (req, res) => {
   try {
-    const { body } = req;
-    //await cloudinaryAssessmentUpload(body);
-    await adminComposeAssessment(body);
+    await adminComposeAssessment(req.body);
+  
     return res.status(201).json({
       status: "Success",
       message: "Assessment Composed successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Fail",
       message: "Unable to compose Assessment",
@@ -459,7 +460,7 @@ const getEntries = async (req, res) => {
         .status(201);
     }
   } catch (error) {
-    return console.log(error.message);
+     console.log(error.message);
   }
 };
 

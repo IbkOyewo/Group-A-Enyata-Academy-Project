@@ -67,7 +67,7 @@ const uploadUser =
 		storage: fileStorage, 
 		limits:
 		  { 
-			fileSize:'2mb' 
+			fileSize:'5mb' 
 		  }, 
 		fileFilter: fileFilter 
 	  }

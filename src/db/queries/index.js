@@ -89,13 +89,14 @@ RETURNING *
     `,
   composeAssessment: `
     INSERT INTO assessments (
-      imageUrl,
+      image,
       questions,
       optionA,
       optionB,
       optionC,
-      optionD
-  ) VALUES ($1, $2, $3, $4, $5, $6)
+      optionD,
+      answer
+  ) VALUES ($1, $2, $3, $4, $5, $6, $7)
   `,
   getAssessment: `
     SELECT * FROM assessments 

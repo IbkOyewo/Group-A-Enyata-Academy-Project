@@ -44,8 +44,8 @@ const checkIfUserExists = require("../validation");
 //ADMIN ENDPOINTS
 router.post("/api/admin/register", validateUser(registerAdminSchema), createNewAdmin);
 router.post("/api/admin/login", validateUser(loginAdminSchema), adminLog);
-router.post("/api/admin/application", upload.uploadApplicationFile, verifyToken('access'), createNewApplication)
-router.post("/api/admin/compose-assessment", validateUser(composeAssessmentSchema), verifyToken('access'), composeAssessment)
+router.post("/api/admin/application", upload.uploadApplicationFile,cloudinaryAdminUpload, verifyToken('access'), createNewApplication)
+router.post("/api/admin/compose-assessment", upload.uploadApplicationFile, cloudinaryAdminUpload,verifyToken('access'), composeAssessment)
 router.get("/api/user/profile/:userid", verifyToken('access'), getUserDetailsById)
 router.get("/api/user/details", verifyToken('access'), getUserDetails)
 router.get("/api/user-dashboard/:userid",verifyToken('access'), returnSingleUser);
