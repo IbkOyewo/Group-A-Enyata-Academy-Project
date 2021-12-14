@@ -170,7 +170,15 @@ RETURNING *
       approval_status= 'Declined'
   WHERE
       id= $1;
+  `,
+  updateAdminById:`
+  UPDATE adminregister
+  SET 
+      name=$2
+  WHERE
+      id= $1;
   `
+
 };
 
 module.exports = queries;
