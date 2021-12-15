@@ -4,7 +4,7 @@ const uploadFiles = async (req, res, next) =>{
 			res.status(201).json({ 
 				data: req.body
 			});
-			console.log(req.body);
+			//console.log(req.body);
 		}else{
 			console.log("File is not uploaded");
 		}

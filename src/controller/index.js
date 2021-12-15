@@ -17,6 +17,7 @@ const {
   getUserProfileById,
   approveUser,
   declineUser,
+  updateAdmin,
 } = require("../services");
 const dotenv = require("dotenv");
 const {
@@ -46,15 +47,20 @@ dotenv.config();
 
 const createNewUser = async (req, res, next) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     const newUser = await createUser(body);
-    const { password, ...user } = newUser;
+    const {
+      password,
+      ...user
+    } = newUser;
 
     res.status(201).json({
-        status: "success",
-        message: `created successfully`,
-        data: user,
-      });
+      status: "success",
+      message: `created successfully`,
+      data: user,
+    });
   } catch (error) {
     next(error);
   }
@@ -62,7 +68,10 @@ const createNewUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
-    const { password, email } = req.body;
+    const {
+      password,
+      email
+    } = req.body;
     const token = await validatePassword(email, password);
 
     if (!token) {
@@ -98,9 +107,9 @@ const forgetpassword = async (req, res) => {
     const verifyuserToken = await updateToken(req.body.email, oneTimeToken);
     sendVerificationEmail(req.body.email, oneTimeToken);
     return res.status(200).json({
-        status: "success",
-        message: "successfully sent reset password",
-      })
+      status: "success",
+      message: "successfully sent reset password",
+    })
   } catch (error) {
     console.log(error.message);
   }
@@ -108,8 +117,13 @@ const forgetpassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const { verification } = req.query;
+    const {
+      email,
+      password
+    } = req.body;
+    const {
+      verification
+    } = req.query;
     const user = await getUser(email);
     const encryptedPassword = await hashPassword(password);
     if (user[0].onetime_token === verification) {
@@ -132,9 +146,14 @@ const resetPassword = async (req, res) => {
 
 const createNewAdmin = async (req, res, next) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     const newAdmin = await createAdmin(req.body);
-    const { password, ...user } = newAdmin;
+    const {
+      password,
+      ...user
+    } = newAdmin;
 
     res.status(201).json({
       status: "success",
@@ -173,8 +192,12 @@ const adminLog = async (req, res, next) => {
 
 const register = async (req, res, next) => {
   try {
-    const { body } = req;
-    const { email } = req.body;
+    const {
+      body
+    } = req;
+    const {
+      email
+    } = req.body;
 
     await userForm(req.body);
     await sendApplicationEmail(body);
@@ -197,12 +220,12 @@ const uploadImage = async (req, res, next) => {
       return next(error)
     }
     await adminImage(req.body)
-     res.status(201).json({
+    res.status(201).json({
       status: "success",
       message: `File uploaded.`,
     });
-    
-  }catch(err){
+
+  } catch (err) {
     console.log(err);
   }
 };
@@ -210,7 +233,9 @@ const uploadImage = async (req, res, next) => {
 
 const createNewApplication = async (req, res) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     //await cloudinaryApplicationUpload(body);
     await adminCreateApplication(req.body);
     return res.status(201).json({
@@ -229,7 +254,7 @@ const createNewApplication = async (req, res) => {
 const composeAssessment = async (req, res) => {
   try {
     await adminComposeAssessment(req.body);
-  
+
     return res.status(201).json({
       status: "Success",
       message: "Assessment Composed successfully",
@@ -245,7 +270,9 @@ const composeAssessment = async (req, res) => {
 
 const takeAssessment = async (req, res) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     const assessment = await getAssessment(body);
     return res.status(201).json({
       status: "Success",
@@ -281,7 +308,7 @@ const getUserDetails = async (req, res) => {
   try {
     //const { body } = req;
     const user = await getUserProfile();
-    console.log(user);
+    //console.log(user);
     return res.status(200).json({
       status: "Success",
       message: "Users Gotten successfully",
@@ -298,7 +325,7 @@ const getUserDetails = async (req, res) => {
 const returnSingleUser = async (req, res) => {
   try {
     const currentUser = await getSingleUserById(req.params.userid);
-  
+
     res.status(200).json({
       status: 'Success',
       message: 'User fetched successfully',
@@ -315,7 +342,7 @@ const returnSingleUser = async (req, res) => {
 const returnSingleAdmin = async (req, res) => {
   try {
     const currentAdmin = await getSingleAdminById(req.params.adminid);
-  
+
     res.status(200).json({
       status: 'Success',
       message: 'Admin fetched successfully',
@@ -332,7 +359,9 @@ const returnSingleAdmin = async (req, res) => {
 
 const getUserResults = async (req, res) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     const user = await getResults(body);
 
     return res.status(200).json({
@@ -350,7 +379,9 @@ const getUserResults = async (req, res) => {
 
 const getAdminDetails = async (req, res) => {
   try {
-    const { body } = req;
+    const {
+      body
+    } = req;
     const admin = await getAdminProfile(body);
     const {
       id,
@@ -373,7 +404,9 @@ const getAdminDetails = async (req, res) => {
 
 const totalBatch = async (req, res) => {
   try {
-    const { batchId } = req.body;
+    const {
+      batchId
+    } = req.body;
 
     const data = await total_batchId(batchId);
     if (data.length === 0) {
@@ -461,7 +494,7 @@ const getEntries = async (req, res) => {
         .status(201);
     }
   } catch (error) {
-     console.log(error.message);
+    console.log(error.message);
   }
 };
 
@@ -504,7 +537,10 @@ const getassessmentHistory = async (req, res) => {
 const approveAUser = async (req, res) => {
   try {
     const currentUser = await getSingleUserById(req.params.userid);
-    const {approval_status,id} = currentUser
+    const {
+      approval_status,
+      id
+    } = currentUser
     await approveUser(approval_status, id);
     return res.status(200).json({
       status: "Success",
@@ -519,10 +555,37 @@ const approveAUser = async (req, res) => {
   }
 };
 
+const updateAdminProfile = async (req, res) => {
+  try {
+    const currentUser = await getSingleAdminById(req.params.adminid);
+    const {
+      id
+    } = currentUser
+    const {
+      name
+    } = req.body
+    console.log(req.body)
+    await updateAdmin(name,id);
+    return res.status(200).json({
+      status: "Success",
+      message: `${currentUser.name} Updated successfully to ${name}`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Fail",
+      message: "Unable to update admin",
+    });
+  }
+};
+
 const declineAUser = async (req, res) => {
   try {
     const currentUser = await getSingleUserById(req.params.userid);
-    const {approval_status,id} = currentUser
+    const {
+      approval_status,
+      id
+    } = currentUser
     await declineUser(approval_status, id);
     return res.status(200).json({
       status: "Success",
@@ -548,6 +611,7 @@ module.exports = {
   createNewApplication,
   composeAssessment,
   takeAssessment,
+  updateAdminProfile,
   getUserDetails,
   returnSingleUser,
   returnSingleAdmin,

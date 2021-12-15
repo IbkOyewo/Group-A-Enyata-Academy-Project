@@ -39,7 +39,7 @@ var upload = multer({ storage: storage })
 app.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
   const file = req.file
   const text = req.body
-  console.log(file, text);
+  //console.log(file, text);
   if (!file) {
     const error = new Error('Please upload a file')
     error.httpStatusCode = 400

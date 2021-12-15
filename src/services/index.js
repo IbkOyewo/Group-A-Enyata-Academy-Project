@@ -177,6 +177,11 @@ const approveUser = (id, approvalStatus) => {
 const declineUser = (id, approvalStatus) => {
   db.any(queries.declineUser, [approvalStatus, id]);
 };
+
+const updateAdmin = (id, newName) => {
+  db.any(queries.updateAdminById, [newName, id]);
+};
+
 module.exports = {
   createUser,
   validatePassword,
@@ -184,6 +189,7 @@ module.exports = {
   updateToken,
   updatePassword,
   createAdmin,
+  updateAdmin,
   insertFile,
   logAdmin,
   validateAdminPassword,
